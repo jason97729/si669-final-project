@@ -9,5 +9,8 @@ npm-debug.*
 *.orig.*
 web-build/
 
+# firebase
+Secrets.js
+
 # macOS
 .DS_Store
