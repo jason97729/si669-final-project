@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 export const colors = {
-  primary: '#7986CB', // MD Amber 500
-  primaryDark: '#303F9F', // MD Brown 300
-  primaryLight: '#E8EAF6', // MD Amber 200
-  outline: '#BDBDBD' // MD Gray 400
+  primary: '#30475E', // Dark Blue
+  primaryDark: '#222831', // Dark dark blue
+  primaryLight: '#F05454', // Red
+  outline: '#E8E8E8' // MD Gray 400
 }
 
 
@@ -17,7 +17,7 @@ export const loginStyles = StyleSheet.create({
     paddingTop: 20
   },
     topView: {
-      flex: 0.3,
+      flex: 0.25,
       alignItems: 'center',
       justifyContent: 'flex-end',
       width: '100%',
@@ -34,7 +34,7 @@ export const loginStyles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
-      //backgroundColor: 'lightgreen'
+      // backgroundColor: 'lightgreen'
     },
       inputRow: {
         flexDirection: 'row',
@@ -47,7 +47,7 @@ export const loginStyles = StyleSheet.create({
           justifyContent: 'flex-end',
           paddingRight: 5,
           textAlign: 'right',
-          fontSize: 10
+          fontSize: 15
         },
         inputText: {
           flex: 0.5,
@@ -68,10 +68,11 @@ export const loginStyles = StyleSheet.create({
           alignItems: 'center',
           borderWidth: 1,
           borderColor: colors.outline,
-          borderRadius: 6,
+          borderRadius: 10,
           backgroundColor: colors.primary,
           width: 100,
-          height: 50
+          height: 45,
+          margin: 5
         },
           buttonText: {
             textAlign: 'center',
