@@ -6,23 +6,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { peopleStyles, colors } from './Styles';
 import { getDataModel } from './DataModel';
 
-export class PeopleScreen extends React.Component {
+export class RecipesScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.dataModel = getDataModel();
     this.currentUser = this.props.route.params.currentUser;
-    
-    let allUsers = this.dataModel.getUsers();
-    let otherUsers = [];
-    for (let user of allUsers) {
-      if (user.email !== this.currentUser.email) {
-        otherUsers.push(user);
-      }
-    }
+
+    let allRecipes = this.dataModel.getRecipes();
 
     this.state = {
-      people: otherUsers
+      recipes: allRecipes
     }
   }
 
@@ -36,21 +30,10 @@ export class PeopleScreen extends React.Component {
                 <View style={peopleStyles.separator}/>
               );
             }}
-            data={this.state.people}
+            data={this.state.recipes}
             renderItem={({item})=> {
               return (
-                <TouchableOpacity 
-                  style={peopleStyles.personRow}
-                  onPress={()=> {
-                    this.props.navigation.navigate('Chat', {
-                      currentUser: this.currentUser,
-                      otherUser: item
-                    });
-                  }}
-                >
-                  <Text style={peopleStyles.personText}>{item.displayName}</Text>
-                  <Ionicons name="ios-arrow-dropright" size={24} color="black"/>                
-                </TouchableOpacity>
+                <Text style={peopleStyles.personText}>{item.name} </Text>
               );
             }}
           />

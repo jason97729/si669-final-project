@@ -48,7 +48,7 @@ export class LoginScreen extends React.Component {
       this.state.passwordInput,
       this.state.displayNameInput
     );
-    this.props.navigation.navigate("People", {
+    this.props.navigation.navigate("Recipes", {
       currentUser: newUser
     });
   }
@@ -61,7 +61,7 @@ export class LoginScreen extends React.Component {
       if (user.email === email) {
         if (user.password === pass) {
           // success!
-          this.props.navigation.navigate("People", {
+          this.props.navigation.navigate("Recipes", {
             currentUser: user
           });
           return;
