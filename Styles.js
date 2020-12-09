@@ -177,3 +177,16 @@ export const chatStyles = StyleSheet.create({
         margin: 5
       }
 });
+
+export const recipeStyles = StyleSheet.create({
+  sectionText: {
+    color: colors.primary,
+    fontSize: 20,
+    fontWeight: '700',
+    padding: 20,
+    textAlign: 'center',
+  }, 
+  sectionContainer: {
+    flex: 2,
+  }
+});

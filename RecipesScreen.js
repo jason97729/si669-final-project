@@ -33,7 +33,12 @@ export class RecipesScreen extends React.Component {
             data={this.state.recipes}
             renderItem={({item})=> {
               return (
-                <Text style={peopleStyles.personText}>{item.name} </Text>
+                <TouchableOpacity 
+                  // style={styles.footerButton}
+                  onPress={()=>{this.props.navigation.navigate("Details")}}>
+                  <Text style={peopleStyles.personText}>{item.name} </Text>
+                </TouchableOpacity>
+                // <Text style={peopleStyles.personText}>{item.name} </Text>
               );
             }}
           />

@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { LoginScreen } from './LoginScreen';
 import { RecipesScreen } from './RecipesScreen';
+import { DetailScreen } from './DetailScreen';
 /*
 import { ChatScreen } from './ChatScreen';
 import { CameraScreen } from './CameraScreen';
@@ -22,6 +23,7 @@ function App() {
       >
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Recipes" component={RecipesScreen} />
+        <Stack.Screen name="Details" component={DetailScreen} />
 
         
       </Stack.Navigator>
