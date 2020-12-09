@@ -8,19 +8,42 @@ class DataModel {
     if (firebase.apps.length === 0) { // aka !firebase.apps.length
       firebase.initializeApp(firebaseConfig);
     }
+    this.recipesRef = firebase.firestore().collection('recipes');
     this.usersRef = firebase.firestore().collection('users');
-    this.chatsRef = firebase.firestore().collection('chats');
     this.storageRef = firebase.storage().ref();
+    this.recipes = [];
     this.users = [];
-    this.chats = [];
     this.chatListeners = [];
     this.asyncInit();
   }
 
   asyncInit = async () => {
+    this.loadRecipes();
     this.loadUsers();
-    this.loadChats();
     //this.subscribeToChats();
+  }
+
+  loadRecipes = async () => {
+    let querySnap = await this.recipesRef.get();
+    querySnap.forEach(async qDocSnap => {
+      let data = qDocSnap.data();
+      let thisRecipe = {
+        key: qDocSnap.id,
+        name: [],
+        description: [],
+        ingredients: [],
+        process: [],
+      }
+      thisRecipe.name.push(data.name);
+      thisRecipe.description.push(data.description);
+      thisRecipe.ingredients.push(data.ingredients);
+      thisRecipe.process.push(data.process);
+      this.recipes.push(thisRecipe);
+    });
+  }
+
+  getRecipes = () => {
+    return this.recipes;
   }
 
   loadUsers = async () => {
