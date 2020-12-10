@@ -16,9 +16,30 @@ export class RecipesScreen extends React.Component {
     let allRecipes = this.dataModel.getRecipes();
 
     this.state = {
-      recipes: allRecipes
+      recipes: allRecipes,
+      nameInput: '',
+      descriptionInput:'',
+      ingredientsInput: '',
+      processInput: []
+      //displayNameInput: '',
+      //passwordInput: '',
     }
   }
+
+  onCreateRecipe = async () => {
+    let newRecipe = await this.dataModel.createRecipe(
+      this.state.nameInput,
+      this.state.descriptionInput,
+      this.state.ingredientsInput,
+      this.state.processInput
+      //this.state.passwordInput,
+      //this.state.displayNameInput
+    );
+    this.props.navigation.navigate("AddRecipeName", {
+      currentRecipe: newRecipe
+    });
+  }
+
 
   render() {
     return (
@@ -33,12 +54,18 @@ export class RecipesScreen extends React.Component {
             data={this.state.recipes}
             renderItem={({item})=> {
               return (
-                <TouchableOpacity 
-                  // style={styles.footerButton}
-                  onPress={()=>{this.props.navigation.navigate("Details")}}>
-                  <Text style={peopleStyles.personText}>{item.name} </Text>
-                </TouchableOpacity>
-                // <Text style={peopleStyles.personText}>{item.name} </Text>
+                <View>
+                  <TouchableOpacity 
+                    // style={styles.footerButton}
+                    onPress={()=>{this.props.navigation.navigate("Details")}}>
+                    <Text style={peopleStyles.personText}>{item.name} </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={this.onCreateRecipe}>
+                    <Ionicons name="md-add-circle" 
+                    size={80} 
+                    color={colors.primaryDark} />
+                  </TouchableOpacity>
+                </View>
               );
             }}
           />

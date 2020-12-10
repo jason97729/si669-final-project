@@ -46,6 +46,41 @@ class DataModel {
     return this.recipes;
   }
 
+  createRecipe = async (name, description, ingredients, process) => {
+    // assemble the data structure
+    let newRecipe = {
+      name: name,
+      description: description,
+      ingredients: ingredients,
+      process: process
+
+      //password: pass,
+      //displayName: dispName
+    }
+
+    // add the data to Firebase (user collection)
+    let newRecipeDocRef = await this.recipesRef.add(newRecipe);
+
+    // get the new Firebase ID and save it as the local "key"
+    let key = newRecipeDocRef.id;
+    newRecipe.key = key;
+    this.recipes.push(newRecipe);
+    return newRecipe;
+  }
+
+  updateRecipe = async (key, name, description, ingredients, process) => {
+    // assemble the data structure
+    let updateRecipe = {
+      name: name,
+      description: description,
+      ingredients: ingredients,
+      process: process
+    }
+    let thisRecipeDocRef = this.recipesRef.doc(key);
+    await thisRecipeDocRef.update(updateRecipe);
+    return updateRecipe;
+  }
+
   loadUsers = async () => {
     let querySnap = await this.usersRef.get();
     querySnap.forEach(qDocSnap => {
