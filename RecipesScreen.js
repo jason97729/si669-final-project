@@ -42,7 +42,18 @@ export class RecipesScreen extends React.Component {
 
   onDeleteRecipe = async(key) => {
     this.dataModel.deleteRecipe(key);
-
+    let {recipes} = this.state.recipes;
+    let foundIndex = -1;
+    for (let idx in recipes) {
+      if (recipes[idx].key === key) {
+        foundIndex = idx;
+        break;
+      }
+    }
+    if (foundIndex !== -1) { // silently fail if item not found
+      recipes.splice(foundIndex, 1); // remove one element 
+    }
+    this.setState({recipes: recipes});
   }
 
 
@@ -60,25 +71,31 @@ export class RecipesScreen extends React.Component {
             renderItem={({item})=> {
               return (
                 <View>
-                  <TouchableOpacity 
-                    // style={styles.footerButton}
-                    onPress={()=>{this.props.navigation.navigate("Details")}}>
-                    <Text style={peopleStyles.personText}>{item.name} </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={this.onCreateRecipe}>
-                    <Ionicons name="md-add-circle" 
-                    size={80} 
-                    color={colors.primaryDark} />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={this.onDeleteRecipe(item.key)}>
-                    <Ionicons name="md-trash" 
-                    size={24} 
-                    color={colors.primaryDark} />
-                  </TouchableOpacity>
+                  <View>
+                    <TouchableOpacity 
+                      // style={styles.footerButton}
+                      onPress={()=>{this.props.navigation.navigate("Details")}}>
+                      <Text style={peopleStyles.personText}>{item.name} </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <TouchableOpacity onPress={() => {this.onDeleteRecipe(item.key)}}>
+                      <Ionicons name="md-trash" 
+                      size={24} 
+                      color={colors.primaryDark} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               );
             }}
           />
+          <View>
+            <TouchableOpacity onPress={this.onCreateRecipe}>
+              <Ionicons name="md-add-circle" 
+              size={80} 
+              color={colors.primaryDark} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     )
