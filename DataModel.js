@@ -81,6 +81,11 @@ class DataModel {
     return updateRecipe;
   }
 
+  deleteRecipe = async (key) => {
+      let recipeDocRef = this.recipesRef.doc(key);
+      await recipeDocRef.delete();
+  }
+
   loadUsers = async () => {
     let querySnap = await this.usersRef.get();
     querySnap.forEach(qDocSnap => {

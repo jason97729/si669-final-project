@@ -40,6 +40,11 @@ export class RecipesScreen extends React.Component {
     });
   }
 
+  onDeleteRecipe = async(key) => {
+    this.dataModel.deleteRecipe(key);
+
+  }
+
 
   render() {
     return (
@@ -63,6 +68,11 @@ export class RecipesScreen extends React.Component {
                   <TouchableOpacity onPress={this.onCreateRecipe}>
                     <Ionicons name="md-add-circle" 
                     size={80} 
+                    color={colors.primaryDark} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={this.onDeleteRecipe(item.key)}>
+                    <Ionicons name="md-trash" 
+                    size={24} 
                     color={colors.primaryDark} />
                   </TouchableOpacity>
                 </View>
