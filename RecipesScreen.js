@@ -74,7 +74,9 @@ export class RecipesScreen extends React.Component {
                   <View>
                     <TouchableOpacity 
                       // style={styles.footerButton}
-                      onPress={()=>{this.props.navigation.navigate("Details")}}>
+                      onPress={()=>{this.props.navigation.navigate("Details", {
+                        currentRecipe: item
+                      })}}>
                       <Text style={peopleStyles.personText}>{item.name} </Text>
                     </TouchableOpacity>
                   </View>
