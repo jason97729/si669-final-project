@@ -80,37 +80,49 @@ export const loginStyles = StyleSheet.create({
           }
 });
 
-export const peopleStyles = StyleSheet.create({
+export const recipeStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: 20
+    paddingTop: 10
   },
-    peopleListContainer: {
-      flex: 0.5,
+    recipeListContainer: {
+      flex: 0.8,
       justifyContent: 'flex-start',
       alignItems: 'stretch',
-      width: '90%',
+      width: '100%',
+      // backgroundColor: 'lightblue'
     },  
       separator: {
-        backgroundColor: colors.primaryLight,
-        height: 1,
-        width: '90%',
+        backgroundColor: colors.outline,
+        height: 3,
+        width: '80%',
         alignSelf: 'center'
       },
-      personRow: {
+      // added from listmaker 2000
+      listItemContainer: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        width: '100%',
-        paddingVertical: 10
+        justifyContent: 'center',
+        paddingVertical: 15,
       },
-        personText: {
-          fontSize: 16,
-        }
+      listItemTextContainer: {
+        flex: 0.8,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+      },
+        listItemText: {
+          fontSize: 18,
+        },
+      footer: {
+          flex: 0.2,
+          justifyContent: 'center',
+          // alignItems: 'center',
+          // backgroundColor: 'yellow'
+        },
 });
 
 export const chatStyles = StyleSheet.create({

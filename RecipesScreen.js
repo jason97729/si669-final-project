@@ -3,7 +3,7 @@ import { TextInput, Text, View,
   FlatList, TouchableOpacity, Alert } 
   from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { peopleStyles, colors } from './Styles';
+import { recipeStyles, colors } from './Styles';
 import { getDataModel } from './DataModel';
 
 export class RecipesScreen extends React.Component {
@@ -59,46 +59,45 @@ export class RecipesScreen extends React.Component {
 
   render() {
     return (
-      <View style={peopleStyles.container}>
-        <View style={peopleStyles.peopleListContainer}>
+      <View style={recipeStyles.container}>
+        <View style={recipeStyles.recipeListContainer}>
           <FlatList
             ItemSeparatorComponent={()=>{
               return (
-                <View style={peopleStyles.separator}/>
+                <View style={recipeStyles.separator}/>
               );
             }}
             data={this.state.recipes}
             renderItem={({item})=> {
               return (
-                <View>
-                  <View>
+                <View style={recipeStyles.listItemContainer}>
+                  <View style={recipeStyles.listItemTextContainer}>
                     <TouchableOpacity 
-                      // style={styles.footerButton}
                       onPress={()=>{this.props.navigation.navigate("Details", {
                         currentRecipe: item
                       })}}>
-                      <Text style={peopleStyles.personText}>{item.name} </Text>
+                      <Text style={recipeStyles.listItemText}>{item.name} </Text>
                     </TouchableOpacity>
                   </View>
                   <View>
                     <TouchableOpacity onPress={() => {this.onDeleteRecipe(item.key)}}>
                       <Ionicons name="md-trash" 
-                      size={24} 
-                      color={colors.primaryDark} />
+                      size={25} 
+                      color={colors.primary} />
                     </TouchableOpacity>
                   </View>
                 </View>
               );
             }}
           />
-          <View>
+        </View>
+        <View style={recipeStyles.footer}>
             <TouchableOpacity onPress={this.onCreateRecipe}>
               <Ionicons name="md-add-circle" 
-              size={80} 
-              color={colors.primaryDark} />
+              size={60} 
+              color={colors.primary} />
             </TouchableOpacity>
           </View>
-        </View>
       </View>
     )
   }
