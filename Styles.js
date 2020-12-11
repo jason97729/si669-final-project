@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 export const colors = {
-  primary: '#7986CB', // MD Amber 500
-  primaryDark: '#303F9F', // MD Brown 300
-  primaryLight: '#E8EAF6', // MD Amber 200
-  outline: '#BDBDBD' // MD Gray 400
+  primary: '#30475E', // Dark Blue
+  primaryDark: '#222831', // Dark dark blue
+  primaryLight: '#F05454', // Red
+  outline: '#E8E8E8' // MD Gray 400
 }
 
 
@@ -17,7 +17,7 @@ export const loginStyles = StyleSheet.create({
     paddingTop: 20
   },
     topView: {
-      flex: 0.3,
+      flex: 0.25,
       alignItems: 'center',
       justifyContent: 'flex-end',
       width: '100%',
@@ -34,7 +34,7 @@ export const loginStyles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
-      //backgroundColor: 'lightgreen'
+      // backgroundColor: 'lightgreen'
     },
       inputRow: {
         flexDirection: 'row',
@@ -47,7 +47,7 @@ export const loginStyles = StyleSheet.create({
           justifyContent: 'flex-end',
           paddingRight: 5,
           textAlign: 'right',
-          fontSize: 10
+          fontSize: 15
         },
         inputText: {
           flex: 0.5,
@@ -68,10 +68,11 @@ export const loginStyles = StyleSheet.create({
           alignItems: 'center',
           borderWidth: 1,
           borderColor: colors.outline,
-          borderRadius: 6,
+          borderRadius: 10,
           backgroundColor: colors.primary,
           width: 100,
-          height: 50
+          height: 45,
+          margin: 5
         },
           buttonText: {
             textAlign: 'center',
@@ -175,4 +176,72 @@ export const chatStyles = StyleSheet.create({
         padding: 5,
         margin: 5
       }
+});
+
+export const detailStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // paddingTop: 20
+  },
+    topView: {
+      flex: 0.2,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      backgroundColor: 'lightblue',
+    },
+    middleView: {
+      flex: 0.6,
+      justifyContent: 'flex-start',
+      alignItems: 'stretch',
+      width: '100%',
+      // backgroundColor: 'lightgreen'
+    },
+      inputRow: {
+        // flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        paddingVertical: 20
+      },
+        inputLabel: {
+          // flex: 0.3,
+          // justifyContent: 'flex-start',
+          paddingTop:10,
+          paddingBottom: 10,
+          // textAlign: 'center',
+          fontSize: 20
+        },
+        inputText: {
+          // flex: 0.5,
+          borderColor: colors.outline,
+          paddingBottom: 10,
+          borderBottomWidth: 3,
+          fontSize: 18,
+        },
+      bottomView: {
+        flex: 0.2,
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        // backgroundColor: 'yellow'
+      },
+        buttonContainer: {
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderWidth: 1,
+          borderColor: colors.outline,
+          borderRadius: 10,
+          backgroundColor: colors.primary,
+          width: 100,
+          height: 45,
+          margin: 5
+        },
+          buttonText: {
+            textAlign: 'center',
+            color: 'white'
+          }
 });
