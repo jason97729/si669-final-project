@@ -111,6 +111,24 @@ class DataModel {
     return recipes;
   }
 
+  // browseRecipe = async (key) => {
+  //   let querySnap = await this.recipesRef.doc(key).get();
+  //   let data = querySnap.data();
+  //   console.log(data)
+  //   let thisRecipe = {
+  //     key: querySnap.id,
+  //     name: [],
+  //     description: [],
+  //     ingredients: [],
+  //     process: [],
+  //   }
+  //   thisRecipe.name.push(data.name);
+  //   thisRecipe.description.push(data.description);
+  //   thisRecipe.ingredients.push(data.ingredients);
+  //   thisRecipe.process.push(data.process);
+  //   return thisRecipe;
+  // }
+
   loadUsers = async () => {
     let querySnap = await this.usersRef.get();
     querySnap.forEach(qDocSnap => {

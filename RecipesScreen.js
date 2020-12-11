@@ -12,7 +12,7 @@ export class RecipesScreen extends React.Component {
 
     this.dataModel = getDataModel();
     this.currentUser = this.props.route.params.currentUser
-    console.log(this.props.route.params.recipe);
+    // console.log(this.props.route.params.recipe);
 
     if (this.props.route.params.recipes != undefined ) {
       this.allRecipes = this.props.route.params.recipes
@@ -85,7 +85,7 @@ export class RecipesScreen extends React.Component {
                     onPress={()=>{this.props.navigation.navigate("Details", {
                       currentRecipe: item
                     })}}>
-                    <Text style={recipeStyles.listItemText}>{item.name} </Text>
+                    <Text style={recipeStyles.listItemText}>{item.name}</Text>
                   </TouchableOpacity>
                 </View>
                 <View>

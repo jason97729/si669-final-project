@@ -16,6 +16,7 @@ export class DetailScreen extends React.Component {
     this.dataModel = getDataModel();
     this.currentUser = this.props.route.params.currentUser;
     this.currentRecipe = this.props.route.params.currentRecipe;
+    // console.log(this.props.route.params.currentRecipe.name.toString())
     // this.recipes = this.props.route.params.recipes;
     // console.log(this.props.route.params.recipes);
     // console.log(this.recipes);
@@ -24,9 +25,9 @@ export class DetailScreen extends React.Component {
     this.imageHeight = 300;
 
     this.state = {
-      nameInput: '',
-      descriptionInput:'',
-      ingredientsInput: '',
+      nameInput: this.props.route.params.currentRecipe.name.toString(),
+      descriptionInput: this.props.route.params.currentRecipe.description.toString(),
+      ingredientsInput: this.props.route.params.currentRecipe.ingredients.toString(),
       processInput: []
     }
   }
@@ -41,7 +42,7 @@ export class DetailScreen extends React.Component {
         //this.state.passwordInput,
         //this.state.displayNameInput
     );
-    console.log(recipes);
+    // console.log(recipes);
     this.props.navigation.navigate("Recipes", {
       recipes: recipes,
     });
@@ -55,6 +56,10 @@ export class DetailScreen extends React.Component {
             keyboardVerticalOffset={10}>
 
             <View style={detailStyles.topView}>
+              {/* <Text>{this.currentRecipe.name}</Text>
+              <Text>{this.state.nameInput}</Text>
+              <Text>{this.currentRecipe.ingredients}</Text> */}
+              
               <Text 
                     style={detailStyles.inputLabel}
                     >Recipe Name</Text>
@@ -65,7 +70,7 @@ export class DetailScreen extends React.Component {
                     autoCorrect={true}
                     autoCompleteType='name'
                     textContentType='name'
-                    value={this.currentRecipe.name}
+                    value={this.state.nameInput}
                     onChangeText={(text)=>{this.setState({nameInput: text})}}
                     />
             </View>
@@ -91,7 +96,7 @@ export class DetailScreen extends React.Component {
                   autoCorrect={true}
                   autoCompleteType='name'
                   textContentType='name'
-                  value={this.currentRecipe.ingredients}
+                  value={this.state.ingredientsInput}
                   onChangeText={(text)=>{this.setState({ingredientsInput: text})}}
                   />
                   <Text 
@@ -105,7 +110,7 @@ export class DetailScreen extends React.Component {
                   autoCorrect={true}
                   autoCompleteType='name'
                   textContentType='name'
-                  value={this.currentRecipe.description}
+                  value={this.state.descriptionInput}
                   onChangeText={(text)=>{this.setState({descriptionInput: text})}}
                   />
                 </View>
