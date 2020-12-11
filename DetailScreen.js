@@ -6,6 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { peopleStyles, recipeStyles, colors } from './Styles';
 import { getDataModel } from './DataModel';
 import { loginStyles } from './Styles';
+import { detailStyles } from './Styles';
+import { StatusBar } from 'expo-status-bar';
 
 export class DetailScreen extends React.Component {
   constructor(props) {
@@ -42,32 +44,42 @@ export class DetailScreen extends React.Component {
   render() {
     return (
       <KeyboardAvoidingView 
-            style={loginStyles.container}
+            style={detailStyles.container}
             behavior={"height"}
             keyboardVerticalOffset={10}>
 
-            <View style={loginStyles.middleView}>
-                {/* <StatusBar style="auto" /> */}
-                <View style={loginStyles.inputRow}>
+            <View style={detailStyles.topView}>
+              <Text 
+                    style={detailStyles.inputLabel}
+                    >Recipe Name</Text>
+                    <TextInput
+                    style={detailStyles.inputText}
+                    keyboardType='default'
+                    autoCapitalize='sentences'
+                    autoCorrect={true}
+                    autoCompleteType='name'
+                    textContentType='name'
+                    value={this.currentRecipe.name}
+                    onChangeText={(text)=>{this.setState({nameInput: text})}}
+                    />
+            </View>
+
+            <View style={detailStyles.middleView}>
+                <StatusBar style="auto" />
+                <View style={detailStyles.inputRow}>
+                  <Text style={detailStyles.inputLabel}>Process</Text>
+                  <Ionicons 
+                      name='ios-camera' 
+                      size={44}
+                      color={colors.primary}
+                      // onPress={this.onTakePicture}
+                    />
                   <Text 
-                  style={loginStyles.inputLabel}
-                  >Recipe Name</Text>
-                  <TextInput
-                  style={loginStyles.inputText}
-                  keyboardType='default'
-                  autoCapitalize='sentences'
-                  autoCorrect={true}
-                  autoCompleteType='name'
-                  textContentType='name'
-                  value={this.currentRecipe.name}
-                  onChangeText={(text)=>{this.setState({nameInput: text})}}
-                  />
-                  <Text>Process</Text>
-                  <Text 
-                  style={loginStyles.inputLabel}
+                  style={detailStyles.inputLabel}
                   >Ingredients</Text>
                   <TextInput
-                  style={loginStyles.inputText}
+                  style={detailStyles.inputText}
+                  placeholder='Enter ingredients          '
                   keyboardType='default'
                   autoCapitalize='sentences'
                   autoCorrect={true}
@@ -77,10 +89,11 @@ export class DetailScreen extends React.Component {
                   onChangeText={(text)=>{this.setState({ingredientsInput: text})}}
                   />
                   <Text 
-                  style={loginStyles.inputLabel}
+                  style={detailStyles.inputLabel}
                   >Descriptions</Text>
                   <TextInput
-                  style={loginStyles.inputText}
+                  style={detailStyles.inputText}
+                  placeholder='Enter description          '
                   keyboardType='default'
                   autoCapitalize='sentences'
                   autoCorrect={true}
@@ -89,13 +102,15 @@ export class DetailScreen extends React.Component {
                   value={this.currentRecipe.description}
                   onChangeText={(text)=>{this.setState({descriptionInput: text})}}
                   />
-                  <TouchableOpacity 
-                  style={loginStyles.buttonContainer}
-                  onPress={this.onUpdateRecipe}
-                  >
-                  <Text style={loginStyles.buttonText}>Save</Text>
-                  </TouchableOpacity>
                 </View>
+            </View>
+            <View style={detailStyles.bottomView}>
+              <TouchableOpacity 
+                    style={detailStyles.buttonContainer}
+                    onPress={this.onUpdateRecipe}
+                    >
+                    <Text style={detailStyles.buttonText}>Save</Text>
+                    </TouchableOpacity>
             </View>
             </KeyboardAvoidingView>
     )

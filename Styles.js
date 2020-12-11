@@ -178,15 +178,70 @@ export const chatStyles = StyleSheet.create({
       }
 });
 
-export const recipeStyles = StyleSheet.create({
-  sectionText: {
-    color: colors.primary,
-    fontSize: 20,
-    fontWeight: '700',
-    padding: 20,
-    textAlign: 'center',
-  }, 
-  sectionContainer: {
-    flex: 2,
-  }
+export const detailStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // paddingTop: 20
+  },
+    topView: {
+      flex: 0.2,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      backgroundColor: 'lightblue',
+    },
+    middleView: {
+      flex: 0.6,
+      justifyContent: 'flex-start',
+      alignItems: 'stretch',
+      width: '100%',
+      // backgroundColor: 'lightgreen'
+    },
+      inputRow: {
+        // flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        paddingVertical: 20
+      },
+        inputLabel: {
+          // flex: 0.3,
+          // justifyContent: 'flex-start',
+          paddingTop:10,
+          paddingBottom: 10,
+          // textAlign: 'center',
+          fontSize: 20
+        },
+        inputText: {
+          // flex: 0.5,
+          borderColor: colors.outline,
+          paddingBottom: 10,
+          borderBottomWidth: 3,
+          fontSize: 18,
+        },
+      bottomView: {
+        flex: 0.2,
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        // backgroundColor: 'yellow'
+      },
+        buttonContainer: {
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderWidth: 1,
+          borderColor: colors.outline,
+          borderRadius: 10,
+          backgroundColor: colors.primary,
+          width: 100,
+          height: 45,
+          margin: 5
+        },
+          buttonText: {
+            textAlign: 'center',
+            color: 'white'
+          }
 });
