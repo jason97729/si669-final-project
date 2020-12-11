@@ -23,6 +23,7 @@ export class AddRecipeNameScreen extends React.Component {
       }
 
     onUpdateRecipe = async () => {
+    console.log(this.id);
     let thisRecipe = await this.dataModel.updateRecipe(
         this.currentRecipe.key,
         this.state.nameInput,
@@ -32,9 +33,10 @@ export class AddRecipeNameScreen extends React.Component {
         //this.state.passwordInput,
         //this.state.displayNameInput
     );
-    this.props.navigation.navigate("Details", {
-        currentRecipe: thisRecipe
-    });
+    this.props.navigation.navigate('Recipes');
+    // this.props.navigation.navigate("Details", {
+    //     currentRecipe: thisRecipe
+    // });
     }
 
     render() {

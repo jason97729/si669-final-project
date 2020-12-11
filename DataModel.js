@@ -78,12 +78,37 @@ class DataModel {
     }
     let thisRecipeDocRef = this.recipesRef.doc(key);
     await thisRecipeDocRef.update(updateRecipe);
-    return updateRecipe;
+    let {recipes} = this.recipes;
+    let foundIndex = -1;
+    for (let idx in recipes) {
+      if (recipes[idx].key === key) {
+        foundIndex = idx;
+        break;
+      }
+    }
+    if (foundIndex !== -1) { // silently fail if item not found
+      recipes[foundIndex].name = name;
+      recipes[foundIndex].description = description;
+      recipes[foundIndex].ingredients = ingredients; 
+    }
+    return recipes;
   }
 
   deleteRecipe = async (key) => {
-      let recipeDocRef = this.recipesRef.doc(key);
-      await recipeDocRef.delete();
+    let recipeDocRef = this.recipesRef.doc(key);
+    await recipeDocRef.delete();
+    let {recipes} = this.recipes;
+    let foundIndex = -1;
+    for (let idx in recipes) {
+      if (recipes[idx].key === key) {
+        foundIndex = idx;
+        break;
+      }
+    }
+    if (foundIndex !== -1) { // silently fail if item not found
+      recipes.splice(foundIndex, 1); // remove one element 
+    }
+    return recipes;
   }
 
   loadUsers = async () => {
