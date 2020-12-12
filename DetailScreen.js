@@ -25,6 +25,7 @@ export class DetailScreen extends React.Component {
     this.imageHeight = 300;
 
     this.state = {
+      recipes: [],
       nameInput: this.props.route.params.currentRecipe.name.toString(),
       descriptionInput: this.props.route.params.currentRecipe.description.toString(),
       ingredientsInput: this.props.route.params.currentRecipe.ingredients.toString(),
@@ -32,19 +33,52 @@ export class DetailScreen extends React.Component {
     }
   }
 
+  componentDidMount = () => {
+    //instead of loading messages once, we will subscribe to message updates
+    this.subscribeToRecipes();
+  }
+
+
+  subscribeToRecipes = async() => {
+
+    // call getRecipes and capture the result in this.recipes
+    this.recipes = await this.dataModel.getRecipes();
+
+
+    // when we subscribe, we will receive an update right away
+    // and anytime there's a change thereafter. So we don't want to setState()
+    // here but when we get the updates
+    this.dataModel.subscribeToRecipes(this.recipes, this.onRecipesUpdate);
+  }
+
+
+  onRecipesUpdate = () => {
+    console.log('got recipes update', this.recipes);
+    this.setState({recipes: this.recipes});
+  }
+
   onUpdateRecipe = async () => {
-    let recipes = await this.dataModel.updateRecipe(
-        this.currentRecipe.key,
-        this.state.nameInput,
-        this.state.descriptionInput,
-        this.state.ingredientsInput,
-        this.state.processInput
-        //this.state.passwordInput,
-        //this.state.displayNameInput
-    );
-    // console.log(recipes);
+    let recipe = {
+      name: this.state.nameInput,
+      description: this.state.descriptionInput,
+      ingredients: this.state.ingredientsInput,
+      process: this.state.processInput
+    }
+    await this.dataModel.updateRecipe(this.currentRecipe.key, recipe)
+
+    // let recipes = await this.dataModel.updateRecipe(
+    //     this.currentRecipe.key,
+    //     this.state.nameInput,
+    //     this.state.descriptionInput,
+    //     this.state.ingredientsInput,
+    //     this.state.processInput
+    //     //this.state.passwordInput,
+    //     //this.state.displayNameInput
+    // );
+    // // console.log(recipes);
+    
     this.props.navigation.navigate("Recipes", {
-      recipes: recipes,
+      recipes: this.state.recipes,
     });
   }
 

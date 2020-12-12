@@ -31,15 +31,48 @@ export class RecipesScreen extends React.Component {
     }
   }
 
+  componentDidMount = () => {
+    //instead of loading messages once, we will subscribe to message updates
+    this.subscribeToRecipes();
+  }
+
+
+  subscribeToRecipes = async() => {
+
+    // call getRecipes and capture the result in this.recipes
+    this.recipes = await this.dataModel.getRecipes();
+
+
+    // when we subscribe, we will receive an update right away
+    // and anytime there's a change thereafter. So we don't want to setState()
+    // here but when we get the updates
+    this.dataModel.subscribeToRecipes(this.recipes, this.onRecipesUpdate);
+  }
+
+
+  onRecipesUpdate = () => {
+    console.log('got recipes update', this.recipes);
+    this.setState({recipes: this.recipes});
+  }
+
   onCreateRecipe = async () => {
-    let newRecipe = await this.dataModel.createRecipe(
-      this.state.nameInput,
-      this.state.descriptionInput,
-      this.state.ingredientsInput,
-      this.state.processInput
-      //this.state.passwordInput,
-      //this.state.displayNameInput
-    );
+    let newRecipe = {
+      name: this.state.nameInput,
+      description: this.state.descriptionInput,
+      ingredients: this.state.ingredientsInput,
+      process: this.state.processInput
+    }
+   
+    await this.dataModel.createRecipe(newRecipe)
+    
+    // let newRecipe = await this.dataModel.createRecipe(
+    //   this.state.nameInput,
+    //   this.state.descriptionInput,
+    //   this.state.ingredientsInput,
+    //   this.state.processInput
+    //   //this.state.passwordInput,
+    //   //this.state.displayNameInput
+    // );
     this.props.navigation.navigate("Details", {
       recipes: this.state.recipes,
       currentRecipe: newRecipe
@@ -47,7 +80,7 @@ export class RecipesScreen extends React.Component {
   }
 
   onDeleteRecipe = async(key) => {
-    this.dataModel.deleteRecipe(key);
+    await this.dataModel.deleteRecipe(key);
     // let recipes = this.dataModel.deleteRecipe(key);
     // this.setState({recipes: recipes})
     // console.log(recipes);
