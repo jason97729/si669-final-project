@@ -1,3 +1,4 @@
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { TextInput, Text, View, 
   Image, TouchableOpacity, KeyboardAvoidingView, Alert} 
@@ -47,7 +48,7 @@ export class LoginScreen extends React.Component {
       this.state.passwordInput,
       this.state.displayNameInput
     );
-    this.props.navigation.navigate("People", {
+    this.props.navigation.navigate("Recipes", {
       currentUser: newUser
     });
   }
@@ -60,7 +61,7 @@ export class LoginScreen extends React.Component {
       if (user.email === email) {
         if (user.password === pass) {
           // success!
-          this.props.navigation.navigate("People", {
+          this.props.navigation.navigate("Recipes", {
             currentUser: user
           });
           return;
@@ -88,6 +89,7 @@ export class LoginScreen extends React.Component {
           />
         </View>
         <View style={loginStyles.middleView}>
+          {/* <StatusBar style="auto" /> */}
           <View style={loginStyles.inputRow}>
             <Text 
               style={loginStyles.inputLabel}
@@ -120,6 +122,7 @@ export class LoginScreen extends React.Component {
           <View style={loginStyles.inputRow}>
             <Text style={loginStyles.inputLabel}>Password:</Text>
             <TextInput
+              secureTextEntry={true}
               style={loginStyles.inputText}
               autoCapitalize='none'
               autoCorrect={false}
@@ -132,6 +135,7 @@ export class LoginScreen extends React.Component {
             <View style={loginStyles.inputRow}>
               <Text style={loginStyles.inputLabel}>Re-enter Password:</Text>
               <TextInput
+                secureTextEntry={true}
                 style={loginStyles.inputText}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -153,7 +157,7 @@ export class LoginScreen extends React.Component {
                 this.setState({mode: 'create'})
               }}
               >
-              <Text style={loginStyles.buttonText}>Create Account</Text>
+              <Text style={loginStyles.buttonText}>Sign up</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={loginStyles.buttonContainer}

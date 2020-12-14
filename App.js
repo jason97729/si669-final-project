@@ -3,7 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { LoginScreen } from './LoginScreen';
-import { PeopleScreen } from './PeopleScreen';
+import { RecipesScreen } from './RecipesScreen';
+import { DetailScreen } from './DetailScreen';
+import { AddRecipeNameScreen } from './AddRecipeNameScreen';
+import { CameraScreen } from './CameraScreen';
 /*
 import { ChatScreen } from './ChatScreen';
 import { CameraScreen } from './CameraScreen';
@@ -21,7 +24,10 @@ function App() {
         }}
       >
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="People" component={PeopleScreen} />
+        <Stack.Screen name="Recipes" component={RecipesScreen} />
+        <Stack.Screen name="Details" component={DetailScreen} />
+        <Stack.Screen name='AddRecipeName' component={AddRecipeNameScreen} />
+        <Stack.Screen name='Camera' component={CameraScreen} />
 
         
       </Stack.Navigator>
