@@ -6,6 +6,7 @@ import { LoginScreen } from './LoginScreen';
 import { RecipesScreen } from './RecipesScreen';
 import { DetailScreen } from './DetailScreen';
 import { AddRecipeNameScreen } from './AddRecipeNameScreen';
+import { CameraScreen } from './CameraScreen';
 /*
 import { ChatScreen } from './ChatScreen';
 import { CameraScreen } from './CameraScreen';
@@ -26,6 +27,7 @@ function App() {
         <Stack.Screen name="Recipes" component={RecipesScreen} />
         <Stack.Screen name="Details" component={DetailScreen} />
         <Stack.Screen name='AddRecipeName' component={AddRecipeNameScreen} />
+        <Stack.Screen name='Camera' component={CameraScreen} />
 
         
       </Stack.Navigator>

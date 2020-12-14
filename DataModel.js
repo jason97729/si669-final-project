@@ -13,7 +13,7 @@ class DataModel {
     this.storageRef = firebase.storage().ref();
     this.recipes = [];
     this.users = [];
-    this.chatListeners = [];
+    this.recipeListeners = [];
     this.asyncInit();
   }
 
@@ -46,44 +46,137 @@ class DataModel {
     return this.recipes;
   }
 
-  createRecipe = async (name, description, ingredients, process) => {
+  createRecipe = async (recipe) => {
     // assemble the data structure
     let newRecipe = {
-      name: name,
-      description: description,
-      ingredients: ingredients,
-      process: process
+      name: recipe.name,
+      description: recipe.description,
+      ingredients: recipe.ingredients,
+      process: recipe.process
 
       //password: pass,
       //displayName: dispName
     }
+    
+    this.recipesRef.add(newRecipe);
 
-    // add the data to Firebase (user collection)
-    let newRecipeDocRef = await this.recipesRef.add(newRecipe);
 
-    // get the new Firebase ID and save it as the local "key"
-    let key = newRecipeDocRef.id;
-    newRecipe.key = key;
-    this.recipes.push(newRecipe);
-    return newRecipe;
+    // // add the data to Firebase (user collection)
+    // let newRecipeDocRef = await this.recipesRef.add(newRecipe);
+
+    // // get the new Firebase ID and save it as the local "key"
+    // let key = newRecipeDocRef.id;
+    // newRecipe.key = key;
+    // this.recipes.push(newRecipe);
+    // return newRecipe;
   }
 
-  updateRecipe = async (key, name, description, ingredients, process) => {
+  updateRecipe = async (key, recipe) => {
     // assemble the data structure
     let updateRecipe = {
-      name: name,
-      description: description,
-      ingredients: ingredients,
-      process: process
+      name: recipe.name,
+      description: recipe.description,
+      ingredients: recipe.ingredients,
+      process: recipe.process
     }
     let thisRecipeDocRef = this.recipesRef.doc(key);
-    await thisRecipeDocRef.update(updateRecipe);
-    return updateRecipe;
+    thisRecipeDocRef.update(updateRecipe);
+    // let {recipes} = this.recipes;
+    // let foundIndex = -1;
+    // for (let idx in recipes) {
+    //   if (recipes[idx].key === key) {
+    //     foundIndex = idx;
+    //     break;
+    //   }
+    // }
+    // if (foundIndex !== -1) { // silently fail if item not found
+    //   recipes[foundIndex].name = name;
+    //   recipes[foundIndex].description = description;
+    //   recipes[foundIndex].ingredients = ingredients; 
+    // }
+    // return recipes;
   }
 
   deleteRecipe = async (key) => {
-      let recipeDocRef = this.recipesRef.doc(key);
-      await recipeDocRef.delete();
+    let recipeDocRef = this.recipesRef.doc(key);
+    await recipeDocRef.delete();
+    let {recipes} = this.recipes;
+    let foundIndex = -1;
+    for (let idx in recipes) {
+      if (recipes[idx].key === key) {
+        foundIndex = idx;
+        break;
+      }
+    }
+    if (foundIndex !== -1) { // silently fail if item not found
+      recipes.splice(foundIndex, 1); // remove one element 
+    }
+    return recipes;
+  }
+
+
+  // clients will call this method and provide the recipe object for
+  // the recipe they want to subscribe to
+  subscribeToRecipes = (recipes, notifyOnUpdate) => {
+
+    // note that this next statement takes up several lines
+    // The first line give us a CollectionReference to the recipes 
+    // The second calls 'onSnapshot()' on the CollectionRef and provides a function
+
+    this.recipeSnapshotUnsub = this.recipesRef.onSnapshot((querySnap) => {
+  
+        // we zero out whatever messages were there previously and start over
+        recipes = [];
+
+
+        // we go through each recipe Document Snapshot
+        querySnap.forEach((qDocSnap) => {
+
+
+          // build the message JavaScript object from the Firebase data
+          let recipeObj = qDocSnap.data();
+          recipeObj.key = qDocSnap.id;
+
+
+          // and add the object to this chat's messages list
+          recipes.push(recipeObj);
+
+        });
+        notifyOnUpdate();
+      });
+    
+      // at the end of this, the recipes list matches what's in Firebase
+      // console.log('Updated recipes:', recipes);   
+
+
+      // call the callback function. Because the caller has a reference to 'chat'
+      // we don't need to pass any arguments.
+      // notifyOnUpdate();
+
+  }
+
+  unsubscribeFromRecipe = (recipe) => {
+    // don't really need 'recipe' but could need it in the future
+    if (this.recipeSnapshotUnsub) {
+      this.recipeSnapshotUnsub();
+    }
+  }
+
+  // event listener
+  addRecipeListener = (listener, recipeID) => {
+    this.subscribeToRecipes(recipeID);
+    this.recipeListeners.push({
+      listener: listener,
+      recipeID: recipeID
+    });
+  }
+
+  notifyRecipeListeners = (_recipeID) => {
+    this.recipeListeners.forEach(({listener, recipeID}) => {
+      if (recipeID === _recipeID) {
+        listener.onRecipesUpdate();
+      }
+    });
   }
 
   loadUsers = async () => {
@@ -126,6 +219,34 @@ class DataModel {
     }
     // will return undefined. No haiku this time...
   }
+
+  // addRecipeImage start
+  addRecipeImage = async (recipe, author, imageObj) =>{
+    let processRef = this.recipesRef.doc(recipe.key).field("process");
+
+    if (this.theCallback) {
+      this.theCallback(imageObj);
+    }
+
+    let fileName = '' + Date.now();
+    let imageRef = this.storageRef.child(fileName);
+
+    let response = await fetch(imageObj.uri);
+    let imageBlob = await response.blob();
+
+    await imageRef.put(imageBlob);
+
+    let downloadURL = await imageRef.getDownloadURL();
+
+    let fbImageObject = {
+      imageURL: downloadURL,
+      author: author.key,
+      type: 'img',
+      timestamp: fileName,
+    }
+    processRef.add(fbImageObject)
+  }
+  // addRecipeImage end
 
   loadChats = async () => {
     let querySnap = await this.chatsRef.get();
