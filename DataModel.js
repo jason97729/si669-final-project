@@ -100,18 +100,18 @@ class DataModel {
   deleteRecipe = async (key) => {
     let recipeDocRef = this.recipesRef.doc(key);
     await recipeDocRef.delete();
-    let {recipes} = this.recipes;
-    let foundIndex = -1;
-    for (let idx in recipes) {
-      if (recipes[idx].key === key) {
-        foundIndex = idx;
-        break;
-      }
-    }
-    if (foundIndex !== -1) { // silently fail if item not found
-      recipes.splice(foundIndex, 1); // remove one element 
-    }
-    return recipes;
+    // let {recipes} = this.recipes;
+    // let foundIndex = -1;
+    // for (let idx in recipes) {
+    //   if (recipes[idx].key === key) {
+    //     foundIndex = idx;
+    //     break;
+    //   }
+    // }
+    // if (foundIndex !== -1) { // silently fail if item not found
+    //   recipes.splice(foundIndex, 1); // remove one element 
+    // }
+    // return recipes;
   }
 
 
@@ -220,9 +220,10 @@ class DataModel {
     // will return undefined. No haiku this time...
   }
 
-  // addRecipeImage start
-  addRecipeImage = async (recipe, author, imageObj) =>{
-    let processRef = this.recipesRef.doc(recipe.key).field("process");
+addRecipeImage = async (recipe, imageObj) => {
+    // console.log('... and here we would add the image ...');
+    let recipeDocRef = this.recipesRef.doc(recipe.key);
+    // console.log(recipeDocRef)
 
     if (this.theCallback) {
       this.theCallback(imageObj);
@@ -239,14 +240,44 @@ class DataModel {
     let downloadURL = await imageRef.getDownloadURL();
 
     let fbImageObject = {
-      imageURL: downloadURL,
-      author: author.key,
-      type: 'img',
-      timestamp: fileName,
+      process: downloadURL,
     }
-    processRef.add(fbImageObject)
+    // recipeDocRef.add(fbImageObject);
+    console.log('test add image', fbImageObject)
+    // console.log('... and here we would add the image ...');
+    // adding process data to recipeScreen
   }
-  // addRecipeImage end
+
+
+  // // addRecipeImage old code 
+  // addRecipeImage = async (recipe, imageObj) => {
+  //   // console.log('... and here we would add the image ...');
+  //   let recipeDocRef = this.recipesRef.doc(recipe.key);
+  //   // console.log(recipeDocRef)
+
+  //   if (this.theCallback) {
+  //     this.theCallback(imageObj);
+  //   }
+
+  //   let fileName = '' + Date.now();
+  //   let imageRef = this.storageRef.child(fileName);
+
+  //   let response = await fetch(imageObj.uri);
+  //   let imageBlob = await response.blob();
+
+  //   await imageRef.put(imageBlob);
+
+  //   let downloadURL = await imageRef.getDownloadURL();
+
+  //   let fbImageObject = {
+  //     process: downloadURL,
+  //   }
+    
+  //   // recipeDocRef.add(fbImageObject);
+  //   console.log(fbImageObject)
+  //   // console.log('... and here we would add the image ...');
+  // }
+  // // addRecipeImage old end
 
   loadChats = async () => {
     let querySnap = await this.chatsRef.get();

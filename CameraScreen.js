@@ -39,7 +39,9 @@ export class CameraScreen extends React.Component {
 
   handleTakePicture = async () => {
     let picData = await this.camera.takePictureAsync();
-    this.dataModel.addRecipeImage(this.currentRecipe, this.currentUser, picData);
+    console.log('took picture!', picData);
+    this.dataModel.addRecipeImage(this.currentRecipe, picData);
+    // console.log('testing handler',  this.dataModel.addRecipeImage(this.currentRecipe, picData))
     this.props.navigation.goBack();
   }
 

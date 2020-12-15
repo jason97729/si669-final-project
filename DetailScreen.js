@@ -29,7 +29,7 @@ export class DetailScreen extends React.Component {
       nameInput: this.props.route.params.currentRecipe.name.toString(),
       descriptionInput: this.props.route.params.currentRecipe.description.toString(),
       ingredientsInput: this.props.route.params.currentRecipe.ingredients.toString(),
-      processInput: []
+      processInput: this.props.route.params.currentRecipe.process.toString()
     }
   }
 
@@ -38,9 +38,9 @@ export class DetailScreen extends React.Component {
     this.subscribeToRecipes();
   }
 
-  componentWillUnmount = () => {
-    this.dataModel.unsubscribeFromRecipe(this.recipes);
-  }
+  // componentWillUnmount = () => {
+  //   this.dataModel.unsubscribeFromRecipe(this.recipes);
+  // }
 
   subscribeToRecipes = async() => {
 
@@ -87,7 +87,7 @@ export class DetailScreen extends React.Component {
 
   onTakePicture = () => {
     this.props.navigation.navigate("Camera", {
-      recipe: this.currentRecipe,
+      currentRecipe: this.currentRecipe,
     })
   }
 

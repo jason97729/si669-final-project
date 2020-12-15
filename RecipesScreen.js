@@ -25,7 +25,7 @@ export class RecipesScreen extends React.Component {
       nameInput: '',
       descriptionInput:'',
       ingredientsInput: '',
-      processInput: []
+      processInput: ''
       //displayNameInput: '',
       //passwordInput: '',
     }
@@ -36,9 +36,9 @@ export class RecipesScreen extends React.Component {
     this.subscribeToRecipes();
   }
 
-  componentWillUnmount = () => {
-    this.dataModel.unsubscribeFromRecipe(this.recipes);
-  }
+  // componentWillUnmount = () => {
+  //   this.dataModel.unsubscribeFromRecipe(this.recipes);
+  // }
 
   subscribeToRecipes = async() => {
 
@@ -54,7 +54,7 @@ export class RecipesScreen extends React.Component {
 
 
   onRecipesUpdate = () => {
-    console.log('got recipes update', this.recipes);
+    // console.log('got recipes update', this.recipes);
     this.setState({recipes: this.recipes});
   }
 
@@ -87,7 +87,7 @@ export class RecipesScreen extends React.Component {
     // let recipes = this.dataModel.deleteRecipe(key);
     // this.setState({recipes: recipes})
     // console.log(recipes);
-    let {recipes} = this.state.recipes;
+    let recipes = this.recipes;
     let foundIndex = -1;
     for (let idx in recipes) {
       if (recipes[idx].key === key) {
