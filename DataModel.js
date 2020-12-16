@@ -128,7 +128,6 @@ class DataModel {
         // we zero out whatever messages were there previously and start over
         recipes = [];
 
-
         // we go through each recipe Document Snapshot
         querySnap.forEach((qDocSnap) => {
 
@@ -222,7 +221,7 @@ class DataModel {
 
 addRecipeImage = async (recipe, imageObj) => {
     // console.log('... and here we would add the image ...');
-    let recipeDocRef = this.recipesRef.doc(recipe.key);
+    let recipeDocRef = this.recipesRef.doc(recipe.key).collection('process');
     // console.log(recipeDocRef)
 
     if (this.theCallback) {
@@ -240,9 +239,10 @@ addRecipeImage = async (recipe, imageObj) => {
     let downloadURL = await imageRef.getDownloadURL();
 
     let fbImageObject = {
-      process: downloadURL,
+      imageURL: downloadURL,
+      timestamp: fileName,
     }
-    // recipeDocRef.add(fbImageObject);
+    recipeDocRef.add(fbImageObject);
     console.log('test add image', fbImageObject)
     // console.log('... and here we would add the image ...');
     // adding process data to recipeScreen
