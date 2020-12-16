@@ -13,9 +13,12 @@ export class DetailScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.dataModel = getDataModel();
-    this.currentUser = this.props.route.params.currentUser;
+    this.operation = this.props.route.params.operation;
     this.currentRecipe = this.props.route.params.currentRecipe;
+    this.currentUser = this.props.route.params.currentUser;
+    this.dataModel = getDataModel();
+    console.log('current recipe:', this.currentRecipe);
+    // console.log(this.currentRecipe.key);
     // console.log(this.props.route.params.currentRecipe.name.toString())
     // this.recipes = this.props.route.params.recipes;
     // console.log(this.props.route.params.recipes);
@@ -24,63 +27,85 @@ export class DetailScreen extends React.Component {
     this.imageWidth = 225,
     this.imageHeight = 300;
 
+    let nameInit = '';
+    let descriptionInit = '';
+    let ingredientsInit = '';
+    let processInit = '';
+    if (this.operation === 'edit') {
+      nameInit = this.currentRecipe.name.toString();
+      descriptionInit = this.props.route.params.currentRecipe.description.toString();
+      ingredientsInit = this.props.route.params.currentRecipe.ingredients.toString();
+      processInit = this.props.route.params.currentRecipe.process.toString();
+    }
+
     this.state = {
-      recipes: [],
-      nameInput: this.props.route.params.currentRecipe.name.toString(),
-      descriptionInput: this.props.route.params.currentRecipe.description.toString(),
-      ingredientsInput: this.props.route.params.currentRecipe.ingredients.toString(),
-      processInput: []
+      // recipes: [],
+      nameInput: nameInit,
+      descriptionInput: descriptionInit,
+      ingredientsInput: ingredientsInit,
+      processInput: processInit,
     }
   }
 
-  componentDidMount = () => {
-    //instead of loading messages once, we will subscribe to message updates
-    this.subscribeToRecipes();
-  }
+  // componentDidMount = () => {
+  //   //instead of loading messages once, we will subscribe to message updates
+  //   this.subscribeToRecipes();
+  // }
 
 
-  subscribeToRecipes = async() => {
+  // subscribeToRecipes = async() => {
 
-    // call getRecipes and capture the result in this.recipes
-    this.recipes = await this.dataModel.getRecipes();
-
-
-    // when we subscribe, we will receive an update right away
-    // and anytime there's a change thereafter. So we don't want to setState()
-    // here but when we get the updates
-    this.dataModel.subscribeToRecipes(this.recipes, this.onRecipesUpdate);
-  }
+  //   // call getRecipes and capture the result in this.recipes
+  //   this.recipes = await this.dataModel.getRecipes();
 
 
-  onRecipesUpdate = () => {
-    console.log('got recipes update', this.recipes);
-    this.setState({recipes: this.recipes});
-  }
+  //   // when we subscribe, we will receive an update right away
+  //   // and anytime there's a change thereafter. So we don't want to setState()
+  //   // here but when we get the updates
+  //   this.dataModel.subscribeToRecipes(this.recipes, this.onRecipesUpdate);
+  // }
 
-  onUpdateRecipe = async () => {
-    let recipe = {
-      name: this.state.nameInput,
-      description: this.state.descriptionInput,
-      ingredients: this.state.ingredientsInput,
-      process: this.state.processInput
-    }
-    await this.dataModel.updateRecipe(this.currentRecipe.key, recipe)
 
-    // let recipes = await this.dataModel.updateRecipe(
-    //     this.currentRecipe.key,
-    //     this.state.nameInput,
-    //     this.state.descriptionInput,
-    //     this.state.ingredientsInput,
-    //     this.state.processInput
-    //     //this.state.passwordInput,
-    //     //this.state.displayNameInput
-    // );
-    // // console.log(recipes);
+  // onRecipesUpdate = () => {
+  //   console.log('got recipes update', this.recipes);
+  //   this.setState({recipes: this.recipes});
+  // }
+
+  // onUpdateRecipe = async () => {
+  //   // console.log('check recipes', this.recipes); // this is missing the new recipe.
     
-    this.props.navigation.navigate("Recipes", {
-      recipes: this.state.recipes,
-    });
-  }
+  //   let recipe = {
+  //     name: this.state.nameInput,
+  //     description: this.state.descriptionInput,
+  //     ingredients: this.state.ingredientsInput,
+  //     process: this.state.processInput
+  //   }
+
+  //   // console.log(recipe); // recipe is the new update one.
+
+
+
+  //   // console.log('key =', this.currentRecipe.key); // key is undefined.....
+
+  //   await this.dataModel.updateRecipe(this.currentRecipe.key, recipe)
+
+  //   // let recipes = await this.dataModel.updateRecipe(
+  //   //     this.currentRecipe.key,
+  //   //     this.state.nameInput,
+  //   //     this.state.descriptionInput,
+  //   //     this.state.ingredientsInput,
+  //   //     this.state.processInput
+  //   //     //this.state.passwordInput,
+  //   //     //this.state.displayNameInput
+  //   // );
+    
+  //   // console.log(this.recipes);
+
+
+  //   this.props.navigation.navigate("Recipes", {
+  //     recipes: this.recipes,
+  //   });
+  // }
 
   render() {
     return (
@@ -152,7 +177,28 @@ export class DetailScreen extends React.Component {
             <View style={detailStyles.bottomView}>
               <TouchableOpacity 
                     style={detailStyles.buttonContainer}
-                    onPress={this.onUpdateRecipe}
+                    onPress={()=>{
+                      let theRecipe = {};
+                      if (this.operation === 'add') {
+                        theRecipe = {
+                          name: this.state.nameInput,
+                          description: this.state.descriptionInput,
+                          ingredients: this.state.ingredientsInput,
+                          process: this.state.processInput,
+                          key: -1 // placeholder for "no ID"
+                        }
+                      } else { // operation === 'edit'
+                        theRecipe = this.props.route.params.currentRecipe;
+                        theRecipe.name = this.state.nameInput;
+                        theRecipe.description = this.state.descriptionInput;
+                        theRecipe.ingredients = this.state.ingredientsInput;
+                        theRecipe.process = this.state.processInput;
+                      }
+                      this.props.navigation.navigate("Recipes", {
+                        operation: this.operation,
+                        recipe: theRecipe
+                      });
+                    }}
                     >
                     <Text style={detailStyles.buttonText}>Save</Text>
                     </TouchableOpacity>

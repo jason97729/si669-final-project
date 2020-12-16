@@ -6,6 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { recipeStyles, colors } from './Styles';
 import { getDataModel } from './DataModel';
 
+let recipes = [];
+
 export class RecipesScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -14,34 +16,33 @@ export class RecipesScreen extends React.Component {
     this.currentUser = this.props.route.params.currentUser
     // console.log(this.props.route.params.recipe);
 
-    if (this.props.route.params.recipes != undefined ) {
-      this.allRecipes = this.props.route.params.recipes
-    } else {
-      this.allRecipes = this.dataModel.getRecipes();
-    }
+    // console.log('recipes', this.props.route.params.recipes);
+
+    // call getRecipes and capture the result in this.recipes
+
+    this.nextKey = 0;
 
     this.state = {
-      recipes: this.allRecipes,
-      nameInput: '',
-      descriptionInput:'',
-      ingredientsInput: '',
-      processInput: []
+      recipes: recipes,
+      // nameInput: '',
+      // descriptionInput:'',
+      // ingredientsInput: '',
+      // processInput: ''
       //displayNameInput: '',
       //passwordInput: '',
     }
   }
 
   componentDidMount = () => {
-    //instead of loading messages once, we will subscribe to message updates
+    this.focusUnsubscribe = this.props.navigation.addListener('focus', this.onFocus);
     this.subscribeToRecipes();
   }
 
 
   subscribeToRecipes = async() => {
 
-    // call getRecipes and capture the result in this.recipes
-    this.recipes = await this.dataModel.getRecipes();
 
+    this.recipes = this.dataModel.getRecipes();
 
     // when we subscribe, we will receive an update right away
     // and anytime there's a change thereafter. So we don't want to setState()
@@ -51,19 +52,34 @@ export class RecipesScreen extends React.Component {
 
 
   onRecipesUpdate = () => {
-    console.log('got recipes update', this.recipes);
+    // console.log('got recipes update', this.recipes);
     this.setState({recipes: this.recipes});
   }
 
-  onCreateRecipe = async () => {
+  onFocus = () => {
+    if (this.props.route.params) {
+      const {operation, recipe} = this.props.route.params;
+      if (operation === 'add') {
+        this.createRecipe(recipe);
+      } else if (operation === 'edit') {
+        this.updateRecipe(recipe, recipe.key);
+      } 
+    }
+    this.props.navigation.setParams({operation: 'none'});
+  }
+
+  createRecipe = async (recipe) => {
+    
     let newRecipe = {
-      name: this.state.nameInput,
-      description: this.state.descriptionInput,
-      ingredients: this.state.ingredientsInput,
-      process: this.state.processInput
+      name: recipe.name,
+      description: recipe.description,
+      ingredients: recipe.ingredients,
+      process: recipe.process
     }
    
-    await this.dataModel.createRecipe(newRecipe)
+    recipes = await this.dataModel.createRecipe(newRecipe)
+
+    this.setState({recipes: recipes});
     
     // let newRecipe = await this.dataModel.createRecipe(
     //   this.state.nameInput,
@@ -73,18 +89,41 @@ export class RecipesScreen extends React.Component {
     //   //this.state.passwordInput,
     //   //this.state.displayNameInput
     // );
-    this.props.navigation.navigate("Details", {
-      recipes: this.state.recipes,
-      currentRecipe: newRecipe
-    });
+  }
+
+  updateRecipe = async (recipe, key) => {
+
+    await this.dataModel.updateRecipe(key, recipe)
+
+    let recipes = this.recipes;
+    let foundIndex = -1;
+    for (let idx in recipes) {
+      if (recipes[idx].key === key) {
+        foundIndex = idx;
+        break;
+      }
+    }
+    if (foundIndex !== -1) { // silently fail if item not found
+      recipes[foundIndex].name = recipe.name;
+      recipes[foundIndex].description = recipe.description;
+      recipes[foundIndex].ingredients = recipe.ingredients; 
+      recipes[foundIndex].process = recipe.process; 
+    }
+   
+    this.setState({recipes: recipes});
+
+    // this.props.navigation.navigate("Details", {
+    //   recipes: this.recipes,
+    //   currentRecipe: recipe
+    // });
   }
 
   onDeleteRecipe = async(key) => {
     await this.dataModel.deleteRecipe(key);
     // let recipes = this.dataModel.deleteRecipe(key);
     // this.setState({recipes: recipes})
+    let recipes = this.recipes;
     // console.log(recipes);
-    let {recipes} = this.state.recipes;
     let foundIndex = -1;
     for (let idx in recipes) {
       if (recipes[idx].key === key) {
@@ -95,8 +134,17 @@ export class RecipesScreen extends React.Component {
     if (foundIndex !== -1) { // silently fail if item not found
       recipes.splice(foundIndex, 1); // remove one element 
     }
+    // console.log(recipes);
     this.setState({recipes: recipes});
   }
+
+  // onEdit = (recipe) => {
+  //   console.log(recipe)
+  //   this.props.navigation.navigate("Details", {
+  //     operation: 'edit',
+  //     CurrentRecipe: recipe
+  //   });
+  // }
 
 
   render() {
@@ -115,9 +163,10 @@ export class RecipesScreen extends React.Component {
               <View style={recipeStyles.listItemContainer}>
                 <View style={recipeStyles.listItemTextContainer}>
                   <TouchableOpacity 
-                    onPress={()=>{this.props.navigation.navigate("Details", {
-                      currentRecipe: item
-                    })}}>
+                    onPress={()=>
+                      this.props.navigation.navigate('Details', 
+                      {operation: "edit",
+                       currentRecipe: item})}>
                     <Text style={recipeStyles.listItemText}>{item.name}</Text>
                   </TouchableOpacity>
                 </View>
@@ -134,7 +183,9 @@ export class RecipesScreen extends React.Component {
         />
       </View>
       <View style={recipeStyles.footer}>
-          <TouchableOpacity onPress={this.onCreateRecipe}>
+          <TouchableOpacity onPress={()=>
+              this.props.navigation.navigate('Details', 
+                {operation: "add"})}>
             <Ionicons name="md-add-circle" 
             size={60} 
             color={colors.primary} />

@@ -27,18 +27,8 @@ class DataModel {
     let querySnap = await this.recipesRef.get();
     querySnap.forEach(async qDocSnap => {
       let data = qDocSnap.data();
-      let thisRecipe = {
-        key: qDocSnap.id,
-        name: [],
-        description: [],
-        ingredients: [],
-        process: [],
-      }
-      thisRecipe.name.push(data.name);
-      thisRecipe.description.push(data.description);
-      thisRecipe.ingredients.push(data.ingredients);
-      thisRecipe.process.push(data.process);
-      this.recipes.push(thisRecipe);
+      data.key = qDocSnap.id;;
+      this.recipes.push(data);
     });
   }
 
@@ -58,20 +48,21 @@ class DataModel {
       //displayName: dispName
     }
     
-    this.recipesRef.add(newRecipe);
+    // this.recipesRef.add(newRecipe);
 
 
-    // // add the data to Firebase (user collection)
-    // let newRecipeDocRef = await this.recipesRef.add(newRecipe);
+    // add the data to Firebase (user collection)
+    let newRecipeDocRef = await this.recipesRef.add(newRecipe);
 
-    // // get the new Firebase ID and save it as the local "key"
-    // let key = newRecipeDocRef.id;
-    // newRecipe.key = key;
-    // this.recipes.push(newRecipe);
-    // return newRecipe;
+    // get the new Firebase ID and save it as the local "key"
+    let key = newRecipeDocRef.id;
+    newRecipe.key = key;
+    this.recipes.push(newRecipe);
+    return this.recipes;
   }
 
   updateRecipe = async (key, recipe) => {
+    let thisRecipeDocRef = this.recipesRef.doc(key);
     // assemble the data structure
     let updateRecipe = {
       name: recipe.name,
@@ -79,8 +70,8 @@ class DataModel {
       ingredients: recipe.ingredients,
       process: recipe.process
     }
-    let thisRecipeDocRef = this.recipesRef.doc(key);
     thisRecipeDocRef.update(updateRecipe);
+
     // let {recipes} = this.recipes;
     // let foundIndex = -1;
     // for (let idx in recipes) {
@@ -100,18 +91,18 @@ class DataModel {
   deleteRecipe = async (key) => {
     let recipeDocRef = this.recipesRef.doc(key);
     await recipeDocRef.delete();
-    let {recipes} = this.recipes;
-    let foundIndex = -1;
-    for (let idx in recipes) {
-      if (recipes[idx].key === key) {
-        foundIndex = idx;
-        break;
-      }
-    }
-    if (foundIndex !== -1) { // silently fail if item not found
-      recipes.splice(foundIndex, 1); // remove one element 
-    }
-    return recipes;
+    // let {recipes} = this.recipes;
+    // let foundIndex = -1;
+    // for (let idx in recipes) {
+    //   if (recipes[idx].key === key) {
+    //     foundIndex = idx;
+    //     break;
+    //   }
+    // }
+    // if (foundIndex !== -1) { // silently fail if item not found
+    //   recipes.splice(foundIndex, 1); // remove one element 
+    // }
+    // return recipes;
   }
 
 
@@ -125,7 +116,7 @@ class DataModel {
 
     this.recipesRef.onSnapshot((querySnap) => {
   
-        // we zero out whatever messages were there previously and start over
+        // we zero out whatever recipes were there previously and start over
         recipes = [];
 
 
@@ -145,7 +136,7 @@ class DataModel {
       });
     
       // at the end of this, the recipes list matches what's in Firebase
-      // console.log('Updated recipes:', recipes);   
+      // console.log('SubscribeToRecipes Updated recipes:', recipes);   
 
 
       // call the callback function. Because the caller has a reference to 'chat'
