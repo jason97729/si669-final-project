@@ -233,6 +233,13 @@ export const detailStyles = StyleSheet.create({
           borderBottomWidth: 3,
           fontSize: 18,
         },
+        mainImage: {
+          backgroundColor: colors.primary,
+          width: 100,
+          height: 70,
+          borderRadius: 5,
+          resizeMode: 'contain'
+        },
       bottomView: {
         flex: 0.2,
         flexDirection: 'row',

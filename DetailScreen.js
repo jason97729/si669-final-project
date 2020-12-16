@@ -14,15 +14,22 @@ export class DetailScreen extends React.Component {
     super(props);
 
     this.dataModel = getDataModel();
+    // subscribe to updates, specifying the callback
+    this.dataModel.subscribeToImageUpdate(this.onImageUpdate);
+
     this.currentUser = this.props.route.params.currentUser;
     this.currentRecipe = this.props.route.params.currentRecipe;
+    
     // console.log(this.props.route.params.currentRecipe.name.toString())
     // this.recipes = this.props.route.params.recipes;
     // console.log(this.props.route.params.recipes);
     // console.log(this.recipes);
    
-    this.imageWidth = 225,
-    this.imageHeight = 300;
+    // this.imageWidth = 225,
+    // this.imageHeight = 300;
+
+    this.imageWidth = 70,
+    this.imageHeight = 100;
 
     this.state = {
       recipes: [],
@@ -55,6 +62,13 @@ export class DetailScreen extends React.Component {
   }
 
 
+  onImageUpdate = (imageObject) => {
+    this.setState({
+      processInput: imageObject
+    });
+    console.log('testingImage', processInput)
+  }
+
   onRecipesUpdate = () => {
     // console.log('got recipes update', this.recipes);
     this.setState({recipes: this.recipes});
@@ -68,6 +82,7 @@ export class DetailScreen extends React.Component {
       process: this.state.processInput
     }
     await this.dataModel.updateRecipe(this.currentRecipe.key, recipe);
+    // console.log('processInput', recipe.process)
 
     // let recipes = await this.dataModel.updateRecipe(
     //     this.currentRecipe.key,
@@ -124,6 +139,11 @@ export class DetailScreen extends React.Component {
                 <StatusBar style="auto" />
                 <View style={detailStyles.inputRow}>
                   <Text style={detailStyles.inputLabel}>Process</Text>
+
+                <Image
+                      style={detailStyles.mainImage}
+                      source={this.state.processInput}
+                        />
                   <Ionicons 
                       name='ios-camera' 
                       size={44}

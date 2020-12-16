@@ -14,6 +14,8 @@ class DataModel {
     this.recipes = [];
     this.users = [];
     this.recipeListeners = [];
+    this.processInput = undefined;
+    this.theCallback = undefined;
     this.asyncInit();
   }
 
@@ -81,20 +83,6 @@ class DataModel {
     }
     let thisRecipeDocRef = this.recipesRef.doc(key);
     thisRecipeDocRef.update(updateRecipe);
-    // let {recipes} = this.recipes;
-    // let foundIndex = -1;
-    // for (let idx in recipes) {
-    //   if (recipes[idx].key === key) {
-    //     foundIndex = idx;
-    //     break;
-    //   }
-    // }
-    // if (foundIndex !== -1) { // silently fail if item not found
-    //   recipes[foundIndex].name = name;
-    //   recipes[foundIndex].description = description;
-    //   recipes[foundIndex].ingredients = ingredients; 
-    // }
-    // return recipes;
   }
 
   deleteRecipe = async (key) => {
@@ -221,8 +209,8 @@ class DataModel {
 
 addRecipeImage = async (recipe, imageObj) => {
     // console.log('... and here we would add the image ...');
-    let recipeDocRef = this.recipesRef.doc(recipe.key).collection('process');
-    // console.log(recipeDocRef)
+    // let recipeDocRef = this.recipesRef.doc(recipe.key).collection('process');
+    console.log('recipeKey', recipe.key)
 
     if (this.theCallback) {
       this.theCallback(imageObj);
@@ -239,45 +227,26 @@ addRecipeImage = async (recipe, imageObj) => {
     let downloadURL = await imageRef.getDownloadURL();
 
     let fbImageObject = {
-      imageURL: downloadURL,
+      process: downloadURL,
       timestamp: fileName,
     }
-    recipeDocRef.add(fbImageObject);
-    console.log('test add image', fbImageObject)
-    // console.log('... and here we would add the image ...');
-    // adding process data to recipeScreen
+    this.recipesRef.doc(recipe.key).update(fbImageObject)
+  }
+
+  // this will allow the MainScreen to be notified when a new image is ready
+  subscribeToImageUpdate = (callback) => {
+    this.theCallback = callback;
   }
 
 
-  // // addRecipeImage old code 
-  // addRecipeImage = async (recipe, imageObj) => {
-  //   // console.log('... and here we would add the image ...');
-  //   let recipeDocRef = this.recipesRef.doc(recipe.key);
-  //   // console.log(recipeDocRef)
-
-  //   if (this.theCallback) {
-  //     this.theCallback(imageObj);
-  //   }
-
-  //   let fileName = '' + Date.now();
-  //   let imageRef = this.storageRef.child(fileName);
-
-  //   let response = await fetch(imageObj.uri);
-  //   let imageBlob = await response.blob();
-
-  //   await imageRef.put(imageBlob);
-
-  //   let downloadURL = await imageRef.getDownloadURL();
-
-  //   let fbImageObject = {
-  //     process: downloadURL,
-  //   }
-    
-  //   // recipeDocRef.add(fbImageObject);
-  //   console.log(fbImageObject)
-  //   // console.log('... and here we would add the image ...');
-  // }
-  // // addRecipeImage old end
+  // this will allow the CameraScreen to update the image
+  updateImage = (imageObject) => {
+    //imageObject format: {uri: xxx, width: yyy, height: zzz}
+    this.processInput = imageObject;
+    if (this.theCallback) {
+      this.theCallback(imageObject);
+    }
+  }
 
   loadChats = async () => {
     let querySnap = await this.chatsRef.get();
