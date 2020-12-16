@@ -14,6 +14,8 @@ class DataModel {
     this.recipes = [];
     this.users = [];
     this.chatListeners = [];
+    this.theImage = undefined;
+    this.theCallback = undefined;
     this.asyncInit();
   }
 
@@ -27,9 +29,19 @@ class DataModel {
     let querySnap = await this.recipesRef.get();
     querySnap.forEach(async qDocSnap => {
       let data = qDocSnap.data();
+      this.theImage = qDocSnap.data();
       data.key = qDocSnap.id;;
       this.recipes.push(data);
     });
+    // let imageDocSnap = await this.currentImageRef.get();
+    // this.theImage = imageDocSnap.data();
+    console.log("got image info", this.theImage);
+
+    // since MainScreen.constructor() will run before DataModel.constructor()
+    // we expect theCallback to have been set by now
+    if (this.theCallback) {
+        this.theCallback(this.theImage);
+    }
   }
 
   getRecipes = () => {
@@ -184,6 +196,49 @@ class DataModel {
       }
     }
     // will return undefined. No haiku this time...
+  }
+
+  addRecipeImage = async (recipe, imageObj) => {
+    // console.log('... and here we would add the image ...');
+    // let recipeDocRef = this.recipesRef.doc(recipe.key).collection('process');
+    console.log('recipeKey', recipe.key)
+
+    this.theImage = imageObj;
+
+    if (this.theCallback) {
+      this.theCallback(imageObj);
+    }
+
+    let fileName = '' + Date.now();
+    let imageRef = this.storageRef.child(fileName);
+
+    let response = await fetch(imageObj.uri);
+    let imageBlob = await response.blob();
+
+    await imageRef.put(imageBlob);
+
+    let downloadURL = await imageRef.getDownloadURL();
+
+    let fbImageObject = {
+      process: downloadURL,
+      timestamp: fileName,
+    }
+    this.recipesRef.doc(recipe.key).update(fbImageObject)
+  }
+
+  // this will allow the MainScreen to be notified when a new image is ready
+  subscribeToImageUpdate = (callback) => {
+    this.theCallback = callback;
+  }
+
+
+  // this will allow the CameraScreen to update the image
+  updateImage = (imageObject) => {
+    //imageObject format: {uri: xxx, width: yyy, height: zzz}
+    this.processInput = imageObject;
+    if (this.theCallback) {
+      this.theCallback(imageObject);
+    }
   }
 
   loadChats = async () => {

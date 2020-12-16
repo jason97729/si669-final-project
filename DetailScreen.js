@@ -17,15 +17,16 @@ export class DetailScreen extends React.Component {
     this.currentRecipe = this.props.route.params.currentRecipe;
     this.currentUser = this.props.route.params.currentUser;
     this.dataModel = getDataModel();
-    console.log('current recipe:', this.currentRecipe);
+    this.dataModel.subscribeToImageUpdate(this.onImageUpdate);
+    // console.log('current recipe:', this.currentRecipe);
     // console.log(this.currentRecipe.key);
     // console.log(this.props.route.params.currentRecipe.name.toString())
     // this.recipes = this.props.route.params.recipes;
     // console.log(this.props.route.params.recipes);
     // console.log(this.recipes);
    
-    this.imageWidth = 225,
-    this.imageHeight = 300;
+    this.imageWidth = 70,
+    this.imageHeight = 100;
 
     let nameInit = '';
     let descriptionInit = '';
@@ -40,12 +41,27 @@ export class DetailScreen extends React.Component {
 
     this.state = {
       // recipes: [],
+      theImage: require('./assets/logo.png'), // placeholder
       nameInput: nameInit,
       descriptionInput: descriptionInit,
       ingredientsInput: ingredientsInit,
       processInput: processInit,
     }
   }
+
+
+  onImageUpdate = (imageObject) => {
+    this.setState({
+      theImage: imageObject
+    });
+    console.log('testingImage', theImage)
+  }
+
+  // onTakePicture = () => {
+  //   this.props.navigation.navigate("Camera", {
+  //     currentRecipe: this.currentRecipe,
+  //   })
+  // }
 
   // componentDidMount = () => {
   //   //instead of loading messages once, we will subscribe to message updates
@@ -138,11 +154,23 @@ export class DetailScreen extends React.Component {
                 <StatusBar style="auto" />
                 <View style={detailStyles.inputRow}>
                   <Text style={detailStyles.inputLabel}>Process</Text>
+                  <Image
+                      style={detailStyles.mainImage}
+                      source={this.state.theImage}
+                  />
+                  
                   <Ionicons 
                       name='ios-camera' 
                       size={44}
                       color={colors.primary}
-                      // onPress={this.onTakePicture}
+                      onPress={()=>{
+                        this.props.navigation.navigate('Camera', 
+                        {
+                          currentRecipe: this.currentRecipe,
+                          currentUser: this.currentUser
+                        }
+                        );
+                      }}
                     />
                   <Text 
                   style={detailStyles.inputLabel}

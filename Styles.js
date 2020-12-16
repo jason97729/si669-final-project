@@ -198,6 +198,34 @@ export const detailStyles = StyleSheet.create({
     justifyContent: 'center',
     // paddingTop: 20
   },
+  logo: {
+    width: 400,
+    height: 100,
+    resizeMode: 'contain'
+  },
+  cameraContainer: {
+    flex: 1,
+  },
+  camera: {
+    flex: 0.85,
+  },
+  cameraControls: {
+    flex: 0.15, 
+    justifyContent: 'flex-start', 
+    alignItems: 'center',
+    padding: '5%',
+    width: '100%',
+    backgroundColor: '#222'
+  },
+  snapText: {
+    fontSize: 36,
+    color: 'white'
+  },
+  mainImage: {
+    height: 400,
+    width: 300,
+    resizeMode: 'contain'
+  },
     topView: {
       flex: 0.2,
       alignItems: 'center',
@@ -232,6 +260,13 @@ export const detailStyles = StyleSheet.create({
           paddingBottom: 10,
           borderBottomWidth: 3,
           fontSize: 18,
+        },
+        mainImage: {
+          backgroundColor: colors.primary,
+          width: 100,
+          height: 70,
+          borderRadius: 5,
+          resizeMode: 'contain'
         },
       bottomView: {
         flex: 0.2,
