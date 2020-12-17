@@ -14,8 +14,8 @@ class DataModel {
     this.recipes = [];
     this.users = [];
     this.chatListeners = [];
-    this.theImage = undefined;
-    this.theCallback = undefined;
+    // this.theImage = undefined;
+    // this.theCallback = undefined;
     this.asyncInit();
   }
 
@@ -29,19 +29,34 @@ class DataModel {
     let querySnap = await this.recipesRef.get();
     querySnap.forEach(async qDocSnap => {
       let data = qDocSnap.data();
-      this.theImage = qDocSnap.data();
-      data.key = qDocSnap.id;;
-      this.recipes.push(data);
+      let thisRecipe  = {
+        key: qDocSnap.id,
+        name: data['name'],
+        description: data['description'],
+        ingredients: data['ingredients'],
+        process: data['process'],
+        images: []
+      }
+      // data.key = qDocSnap.id;;
+      let imagesRef = qDocSnap.ref.collection("images");
+      let imagesQSnap = await imagesRef.get();
+      imagesQSnap.forEach(qDocSnap => {
+        let imageData = qDocSnap.data();
+        imageData.key = qDocSnap.id;
+        thisRecipe.images.push(imageData);
+      });
+
+      this.recipes.push(thisRecipe);
     });
     // let imageDocSnap = await this.currentImageRef.get();
     // this.theImage = imageDocSnap.data();
-    console.log("got image info", this.theImage);
+    // console.log("got image info", this.theImage);
 
     // since MainScreen.constructor() will run before DataModel.constructor()
     // we expect theCallback to have been set by now
-    if (this.theCallback) {
-        this.theCallback(this.theImage);
-    }
+    // if (this.theCallback) {
+    //     this.theCallback(this.theImage);
+    // }
   }
 
   getRecipes = () => {
@@ -54,7 +69,8 @@ class DataModel {
       name: recipe.name,
       description: recipe.description,
       ingredients: recipe.ingredients,
-      process: recipe.process
+      process: recipe.process,
+      images: []
 
       //password: pass,
       //displayName: dispName
@@ -201,13 +217,19 @@ class DataModel {
   addRecipeImage = async (recipe, imageObj) => {
     // console.log('... and here we would add the image ...');
     // let recipeDocRef = this.recipesRef.doc(recipe.key).collection('process');
-    console.log('recipeKey', recipe.key)
+    let imagesRef = this.recipesRef.doc(recipe.key).collection('images');
 
-    this.theImage = imageObj;
+    // console.log('recipeKey', recipe.key)
 
     if (this.theCallback) {
       this.theCallback(imageObj);
     }
+
+    // this.theImage = imageObj;
+
+    // if (this.theCallback) {
+    //   this.theCallback(imageObj);
+    // }
 
     let fileName = '' + Date.now();
     let imageRef = this.storageRef.child(fileName);
@@ -223,7 +245,9 @@ class DataModel {
       process: downloadURL,
       timestamp: fileName,
     }
-    this.recipesRef.doc(recipe.key).update(fbImageObject)
+
+    imagesRef.add(fbImageObject)
+    // this.recipesRef.doc(recipe.key).update(fbImageObject)
   }
 
   // this will allow the MainScreen to be notified when a new image is ready

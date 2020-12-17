@@ -51,10 +51,11 @@ export class DetailScreen extends React.Component {
 
 
   onImageUpdate = (imageObject) => {
+    
     this.setState({
       theImage: imageObject
     });
-    console.log('testingImage', theImage)
+    // console.log('testingImage', theImage)
   }
 
   // onTakePicture = () => {
