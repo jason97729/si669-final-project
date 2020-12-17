@@ -17,6 +17,7 @@ export class CameraScreen extends React.Component {
 
     this.currentUser = this.props.route.params.currentUser;
     this.currentRecipe = this.props.route.params.currentRecipe;
+    console.log("in camera screen, currentRecipe =", this.currentRecipe);
 
     this.state = {
       hasCameraPermission: false,
@@ -39,6 +40,8 @@ export class CameraScreen extends React.Component {
 
   onTakePicture = async () => {
     let picData = await this.cameraRef.takePictureAsync();
+    // console.log(picData);
+    // console.log(this.currentRecipe.key);
     this.dataModel.addRecipeImage(this.currentRecipe, picData);
     this.props.navigation.goBack();
     //console.log('took picture!', picData);

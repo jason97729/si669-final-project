@@ -74,7 +74,8 @@ export class RecipesScreen extends React.Component {
       name: recipe.name,
       description: recipe.description,
       ingredients: recipe.ingredients,
-      process: recipe.process
+      process: recipe.process,
+      images: recipe.images
     }
    
     recipes = await this.dataModel.createRecipe(newRecipe)
@@ -108,6 +109,7 @@ export class RecipesScreen extends React.Component {
       recipes[foundIndex].description = recipe.description;
       recipes[foundIndex].ingredients = recipe.ingredients; 
       recipes[foundIndex].process = recipe.process; 
+      recipes[foundIndex].images = recipe.images
     }
    
     this.setState({recipes: recipes});
@@ -185,7 +187,8 @@ export class RecipesScreen extends React.Component {
       <View style={recipeStyles.footer}>
           <TouchableOpacity onPress={()=>
               this.props.navigation.navigate('Details', 
-                {operation: "add"})}>
+                {operation: "add",
+                currentRecipe: this.props.route.params})}>
             <Ionicons name="md-add-circle" 
             size={60} 
             color={colors.primary} />

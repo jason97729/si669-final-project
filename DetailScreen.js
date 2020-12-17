@@ -15,6 +15,7 @@ export class DetailScreen extends React.Component {
 
     this.operation = this.props.route.params.operation;
     this.currentRecipe = this.props.route.params.currentRecipe;
+    console.log("in detail screen, currentRecipe = ", this.currentRecipe);
     this.currentUser = this.props.route.params.currentUser;
     this.dataModel = getDataModel();
     this.dataModel.subscribeToImageUpdate(this.onImageUpdate);
@@ -50,6 +51,7 @@ export class DetailScreen extends React.Component {
   }
 
 
+
   onImageUpdate = (imageObject) => {
     
     this.setState({
@@ -65,27 +67,31 @@ export class DetailScreen extends React.Component {
   // }
 
   // componentDidMount = () => {
-  //   //instead of loading messages once, we will subscribe to message updates
-  //   this.subscribeToRecipes();
+  //   //instead of loading images once, we will subscribe to image updates
+  //   if (this.operation !== 'add') {
+  //     this.subscribeToRecipe();
+  //   }
   // }
 
 
-  // subscribeToRecipes = async() => {
+
+
+  // subscribeToRecipe = async() => {
 
   //   // call getRecipes and capture the result in this.recipes
-  //   this.recipes = await this.dataModel.getRecipes();
+  //   // this.recipe = await this.dataModel.getRecipe();
 
 
   //   // when we subscribe, we will receive an update right away
   //   // and anytime there's a change thereafter. So we don't want to setState()
   //   // here but when we get the updates
-  //   this.dataModel.subscribeToRecipes(this.recipes, this.onRecipesUpdate);
+  //   this.dataModel.subscribeToRecipe(this.currentRecipe, this.onRecipeUpdate);
   // }
 
 
-  // onRecipesUpdate = () => {
-  //   console.log('got recipes update', this.recipes);
-  //   this.setState({recipes: this.recipes});
+  // onRecipeUpdate = () => {
+  //   console.log('got recipes update', this.recipe);
+  //   this.setState({theImage: this.recipe.images});
   // }
 
   // onUpdateRecipe = async () => {
@@ -165,13 +171,37 @@ export class DetailScreen extends React.Component {
                       size={44}
                       color={colors.primary}
                       onPress={()=>{
-                        this.props.navigation.navigate('Camera', 
-                        {
-                          currentRecipe: this.currentRecipe,
-                          currentUser: this.currentUser
+                      let theRecipe = {};
+                      if (this.operation === 'add') {
+                        theRecipe = {
+                          name: this.state.nameInput,
+                          description: this.state.descriptionInput,
+                          ingredients: this.state.ingredientsInput,
+                          process: this.state.processInput,
+                          images: [this.state.theImage],
+                          key: -1 // placeholder for "no ID"
                         }
-                        );
-                      }}
+                      } else { // operation === 'edit'
+                        theRecipe = this.props.route.params.currentRecipe;
+                        theRecipe.name = this.state.nameInput;
+                        theRecipe.description = this.state.descriptionInput;
+                        theRecipe.ingredients = this.state.ingredientsInput;
+                        theRecipe.process = this.state.processInput;
+                        theRecipe.images.push(this.state.theImage);
+                      }
+                      this.props.navigation.navigate("Camera", {
+                        operation: this.operation,
+                        currentRecipe: theRecipe,
+                        currentUser: this.currentUser
+                      });
+                    }}
+                      //   this.props.navigation.navigate('Camera', 
+                      //   {
+                      //     currentRecipe: this.currentRecipe,
+                      //     currentUser: this.currentUser
+                      //   }
+                      //   );
+                      // }}
                     />
                   <Text 
                   style={detailStyles.inputLabel}
@@ -214,6 +244,7 @@ export class DetailScreen extends React.Component {
                           description: this.state.descriptionInput,
                           ingredients: this.state.ingredientsInput,
                           process: this.state.processInput,
+                          images: [this.state.theImage],
                           key: -1 // placeholder for "no ID"
                         }
                       } else { // operation === 'edit'
@@ -222,6 +253,7 @@ export class DetailScreen extends React.Component {
                         theRecipe.description = this.state.descriptionInput;
                         theRecipe.ingredients = this.state.ingredientsInput;
                         theRecipe.process = this.state.processInput;
+                        theRecipe.images.push(this.state.theImage);
                       }
                       this.props.navigation.navigate("Recipes", {
                         operation: this.operation,

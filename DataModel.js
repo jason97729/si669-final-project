@@ -14,8 +14,8 @@ class DataModel {
     this.recipes = [];
     this.users = [];
     this.chatListeners = [];
-    // this.theImage = undefined;
-    // this.theCallback = undefined;
+    this.theImage = undefined;
+    this.theCallback = undefined;
     this.asyncInit();
   }
 
@@ -96,7 +96,8 @@ class DataModel {
       name: recipe.name,
       description: recipe.description,
       ingredients: recipe.ingredients,
-      process: recipe.process
+      process: recipe.process,
+      images: []
     }
     thisRecipeDocRef.update(updateRecipe);
 
@@ -173,6 +174,45 @@ class DataModel {
 
   }
 
+
+
+  // clients will call this method and provide the recipe object for
+  // the recipe they want to subscribe to
+  subscribeToRecipe = (recipe, notifyOnUpdate) => {
+
+    // note that this next statement takes up several lines
+    // The first two give us a CollectionReference to this recipe's 'images' 
+    // The third calls 'onSnapshot()' on the CollRef and provides a function
+    this.recipesRef.doc(recipe.key)
+      .collection('images')
+      .onSnapshot((querySnap) => {
+
+        // we zero out whatever images were there previously and start over
+        recipe.images = [];
+
+        // we go through each message Document Snapshot
+        querySnap.forEach((qDocSnap) => {
+
+          // build the image JavaScript object from the Firebase data
+          let imageObj = qDocSnap.data();
+          imageObj.key = qDocSnap.id;
+
+          // and add the object to this recipe's images list
+          recipe.images.push(imageObj);
+
+        });
+      });
+    // // at the end of this, the recipe's images list matches what's in Firebase
+    // console.log('Updated recipe images:', recipe.images);
+
+    // call the callback function. Because the caller has a reference to 'chat'
+    // we don't need to pass any arguments.
+    notifyOnUpdate();
+  }
+
+
+
+
   loadUsers = async () => {
     let querySnap = await this.usersRef.get();
     querySnap.forEach(qDocSnap => {
@@ -217,9 +257,14 @@ class DataModel {
   addRecipeImage = async (recipe, imageObj) => {
     // console.log('... and here we would add the image ...');
     // let recipeDocRef = this.recipesRef.doc(recipe.key).collection('process');
+    // console.log('recipeKey', recipe.key)
+    if (typeof recipe.key !== "string") {
+      recipe.key = recipe.key.toString()
+    }
+    
     let imagesRef = this.recipesRef.doc(recipe.key).collection('images');
 
-    // console.log('recipeKey', recipe.key)
+    
 
     if (this.theCallback) {
       this.theCallback(imageObj);
@@ -242,7 +287,7 @@ class DataModel {
     let downloadURL = await imageRef.getDownloadURL();
 
     let fbImageObject = {
-      process: downloadURL,
+      imageURL: downloadURL,
       timestamp: fileName,
     }
 
@@ -257,12 +302,43 @@ class DataModel {
 
 
   // this will allow the CameraScreen to update the image
-  updateImage = (imageObject) => {
+  updateImage = async (imageObject) => {
+        
+    let imagesRef = this.recipesRef.doc(recipe.key).collection('images');
+
     //imageObject format: {uri: xxx, width: yyy, height: zzz}
-    this.processInput = imageObject;
+    this.theImage = imageObject;
+
+    // invoke the callback right away, OK if the storage takes a bit longer
     if (this.theCallback) {
       this.theCallback(imageObject);
     }
+
+    // Set up storage refs and download URL
+    let fileName = '' + Date.now();
+    let imageRef = this.storageRef.child(fileName);
+    
+    // fetch the image object from the local filesystem
+    let response = await fetch(imageObject.uri);
+    let imageBlob = await response.blob();
+
+    // then upload it to Firebase Storage
+    await imageRef.put(imageBlob);
+
+    // ... and update the current image Document in Firestore
+    let downloadURL = await imageRef.getDownloadURL();
+
+    // create a DIFFERENT object to shove into Firebase
+    let fbImageObject = {
+      height: imageObject.height,
+      width: imageObject.width,
+      uri: downloadURL
+    }
+  //    imageObject.uri = downloadURL; // replace local URI with permanent one
+    await imagesRef.set(fbImageObject);
+    // if (this.theCallback) {
+    //   this.theCallback(imageObject);
+    // }
   }
 
   loadChats = async () => {
