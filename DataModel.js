@@ -35,13 +35,19 @@ class DataModel {
         description: data['description'],
         ingredients: data['ingredients'],
         process: data['process'],
-        images: []
+        images: [], 
+        // participants: []
       }
+      // for (let userID of data.participants) {
+      //   let user = this.getUserForID(userID);
+      //   thisChat.participants.push(user);
+      // }
       // data.key = qDocSnap.id;;
       let imagesRef = qDocSnap.ref.collection("images");
       let imagesQSnap = await imagesRef.get();
       imagesQSnap.forEach(qDocSnap => {
         let imageData = qDocSnap.data();
+        // imageData.author = this.getUserForID(imageData.author);
         imageData.key = qDocSnap.id;
         thisRecipe.images.push(imageData);
       });
@@ -70,7 +76,8 @@ class DataModel {
       description: recipe.description,
       ingredients: recipe.ingredients,
       process: recipe.process,
-      images: []
+      images: [],
+      author: recipe.author
 
       //password: pass,
       //displayName: dispName
@@ -214,7 +221,7 @@ class DataModel {
     // will return undefined. No haiku this time...
   }
 
-  addRecipeImage = async (recipe, imageObj) => {
+  addRecipeImage = async (recipe, author, imageObj) => {
     // console.log('... and here we would add the image ...');
     // let recipeDocRef = this.recipesRef.doc(recipe.key).collection('process');
     let imagesRef = this.recipesRef.doc(recipe.key).collection('images');
@@ -244,6 +251,7 @@ class DataModel {
     let fbImageObject = {
       process: downloadURL,
       timestamp: fileName,
+      author: author.key
     }
 
     imagesRef.add(fbImageObject)

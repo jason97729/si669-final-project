@@ -129,7 +129,13 @@ export const recipeStyles = StyleSheet.create({
         justifyContent: 'flex-start',
       },
         listItemText: {
+          color: colors.primary,
           fontSize: 18,
+        },
+        listAuthorText: {
+          fontSize: 15,
+          paddingTop: 5,
+          color: '#BBB'
         },
       footer: {
           flex: 0.2,
@@ -250,6 +256,7 @@ export const detailStyles = StyleSheet.create({
       // backgroundColor: 'lightgreen'
     },
       inputRow: {
+        // flexDirection:'column',
         justifyContent: 'space-around',
         alignItems: 'center',
         paddingVertical: 20
@@ -263,6 +270,7 @@ export const detailStyles = StyleSheet.create({
           fontSize: 20
         },
         inputText: {
+          // flexShrink: 1,
           borderColor: colors.outline,
           paddingBottom: 10,
           borderBottomWidth: 3,

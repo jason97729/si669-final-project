@@ -15,7 +15,7 @@ export class RecipesScreen extends React.Component {
 
     this.dataModel = getDataModel();
     this.currentUser = this.props.route.params.currentUser
-    // console.log(this.props.route.params.recipe);
+    // console.log('testing user', this.currentUser.displayName);
 
     // console.log('recipes', this.props.route.params.recipes);
 
@@ -75,7 +75,8 @@ export class RecipesScreen extends React.Component {
       name: recipe.name,
       description: recipe.description,
       ingredients: recipe.ingredients,
-      process: recipe.process
+      process: recipe.process,
+      author: recipe.author
     }
    
     recipes = await this.dataModel.createRecipe(newRecipe)
@@ -109,6 +110,7 @@ export class RecipesScreen extends React.Component {
       recipes[foundIndex].description = recipe.description;
       recipes[foundIndex].ingredients = recipe.ingredients; 
       recipes[foundIndex].process = recipe.process; 
+      recipes[foundIndex].author = recipe.author;
     }
    
     this.setState({recipes: recipes});
@@ -169,6 +171,7 @@ export class RecipesScreen extends React.Component {
                       {operation: "edit",
                        currentRecipe: item})}>
                     <Text style={recipeStyles.listItemText}>{item.name}</Text>
+                    <Text style={recipeStyles.listAuthorText}>created by {this.currentUser.displayName}</Text>
                   </TouchableOpacity>
                 </View>
                 <View>
