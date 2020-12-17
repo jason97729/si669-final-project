@@ -6,7 +6,7 @@ import { Button } from 'react-native-elements';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 
-import { cameraStyles, colors } from './Styles';
+import { detailStyles } from './Styles';
 import { getDataModel } from './DataModel';
 
 export class CameraScreen extends React.Component {
@@ -19,7 +19,7 @@ export class CameraScreen extends React.Component {
     this.currentRecipe = this.props.route.params.currentRecipe;
 
     this.state = {
-      hasCameraPermission: null,
+      hasCameraPermission: false,
       type: Camera.Constants.Type.back,
     };  
   }
@@ -37,13 +37,20 @@ export class CameraScreen extends React.Component {
     });
   }
 
-  handleTakePicture = async () => {
-    let picData = await this.camera.takePictureAsync();
-    console.log('took picture again!', picData);
+  onTakePicture = async () => {
+    let picData = await this.cameraRef.takePictureAsync();
     this.dataModel.addRecipeImage(this.currentRecipe, picData);
-    this.dataModel.updateImage(picData);
     this.props.navigation.goBack();
+    //console.log('took picture!', picData);
   }
+
+//   handleTakePicture = async () => {
+//     let picData = await this.camera.takePictureAsync();
+//     console.log('took picture again!', picData);
+//     this.dataModel.addRecipeImage(this.currentRecipe, picData);
+//     this.dataModel.updateImage(picData);
+//     this.props.navigation.goBack();
+//   }
 
   setupCamera = async (cameraRef) => { 
     this.camera = cameraRef;
@@ -57,47 +64,28 @@ export class CameraScreen extends React.Component {
       return <Text>No access to camera</Text>;
     } else {
       return (
-        <View style={{ flex: 1 }}>
-          <Camera 
-            style={{ flex: 1 }} 
-            type={this.state.type}
-            ratio='4:3'
-            pictureSize='Medium'
-            ref={this.setupCamera}
-          >
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                flexDirection: 'row',
-              }}>
-              <TouchableOpacity
-                style={{
-                  flex: 0.1,
-                  alignSelf: 'flex-end',
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  this.setState({
-                    type:
-                      this.state.type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back,
-                  });
-                }}>
-                <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> 
-                  Flip 
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Camera>
-          <Button
-            title='Take Picture'
-            onPress={this.handleTakePicture}
-          />
-        </View>
+        <View style={detailStyles.cameraContainer}>
+        {this.state.hasCameraPermission ?
+          <View style={{flex: 1}}>
+            <Camera 
+              style={detailStyles.camera}
+              ratio='4:3'
+              pictureSize='Medium'
+              ref={ref=>this.cameraRef=ref}
+            />
+            <TouchableOpacity 
+              style={detailStyles.cameraControls}
+              onPress={this.onTakePicture}>
+              <Text style={detailStyles.cameraText}>Take a Picture!</Text>
+            </TouchableOpacity>
+          </View>
+        :
+          <Text>
+            No access to camera.
+          </Text>
+        }   
+      </View>
       );
     }
   }
 }
-

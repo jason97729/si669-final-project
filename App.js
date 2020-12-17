@@ -26,7 +26,7 @@ function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Recipes" component={RecipesScreen} />
         <Stack.Screen name="Details" component={DetailScreen} />
-        <Stack.Screen name='AddRecipeName' component={AddRecipeNameScreen} />
+        {/* <Stack.Screen name='AddRecipeName' component={AddRecipeNameScreen} /> */}
         <Stack.Screen name='Camera' component={CameraScreen} />
 
         

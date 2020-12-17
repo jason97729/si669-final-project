@@ -80,8 +80,9 @@ export class LoginScreen extends React.Component {
     return (
       <KeyboardAvoidingView 
         style={loginStyles.container}
-        behavior={"height"}
-        keyboardVerticalOffset={10}>
+        behavior={"padding"}
+        keyboardVerticalOffset={25}
+        >
         <View style={loginStyles.topView}>
           <Image 
             source={require('./assets/logo.png')}
@@ -91,12 +92,13 @@ export class LoginScreen extends React.Component {
         <View style={loginStyles.middleView}>
           {/* <StatusBar style="auto" /> */}
           <View style={loginStyles.inputRow}>
-            <Text 
+            {/* <Text 
               style={loginStyles.inputLabel}
-            >Email:</Text>
+            >Email:</Text> */}
             <TextInput
               style={loginStyles.inputText}
               keyboardType='email-address'
+              placeholder='Enter email'
               autoCapitalize='none'
               autoCorrect={false}
               autoCompleteType='email'
@@ -107,9 +109,10 @@ export class LoginScreen extends React.Component {
           </View>
           {this.state.mode === 'create' ? (
             <View style={loginStyles.inputRow}>
-              <Text style={loginStyles.inputLabel}>Display Name:</Text>
+              {/* <Text style={loginStyles.inputLabel}>Display Name:</Text> */}
               <TextInput
                 style={loginStyles.inputText}
+                placeholder='Display name'
                 autoCapitalize='none'
                 autoCorrect={false}
                 value={this.state.displayNameInput}
@@ -120,10 +123,11 @@ export class LoginScreen extends React.Component {
             <View/>
           )}
           <View style={loginStyles.inputRow}>
-            <Text style={loginStyles.inputLabel}>Password:</Text>
+            {/* <Text style={loginStyles.inputLabel}>Password:</Text> */}
             <TextInput
               secureTextEntry={true}
               style={loginStyles.inputText}
+              placeholder='Enter password'
               autoCapitalize='none'
               autoCorrect={false}
               textContentType='password'
@@ -133,10 +137,11 @@ export class LoginScreen extends React.Component {
           </View>
           {this.state.mode === 'create' ? (
             <View style={loginStyles.inputRow}>
-              <Text style={loginStyles.inputLabel}>Re-enter Password:</Text>
+              {/* <Text style={loginStyles.inputLabel}>Re-enter Password:</Text> */}
               <TextInput
                 secureTextEntry={true}
                 style={loginStyles.inputText}
+                placeholder='Re-enter password'
                 autoCapitalize='none'
                 autoCorrect={false}
                 textContentType='password'  

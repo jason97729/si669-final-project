@@ -3,10 +3,10 @@ import { StyleSheet } from 'react-native';
 export const colors = {
   primary: '#30475E', // Dark Blue
   primaryDark: '#222831', // Dark dark blue
-  primaryLight: '#F05454', // Red
+  primaryLight: '#EFF8FF',
+  primaryRed: '#F05454', // Red
   outline: '#E8E8E8' // MD Gray 400
 }
-
 
 export const loginStyles = StyleSheet.create({
   container: {
@@ -17,7 +17,7 @@ export const loginStyles = StyleSheet.create({
     paddingTop: 20
   },
     topView: {
-      flex: 0.25,
+      flex: 0.2,
       alignItems: 'center',
       justifyContent: 'flex-end',
       width: '100%',
@@ -25,39 +25,52 @@ export const loginStyles = StyleSheet.create({
       logoImage: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: '50%',
-        height: '50%',
+        width: '80%',
+        height: '80%',
         resizeMode: 'contain',
       },
     middleView: {
-      flex: 0.4,
+      flex: 0.6,
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
       // backgroundColor: 'lightgreen'
     },
-      inputRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        paddingVertical: 15
-      },
-        inputLabel: {
-          flex: 0.3,
-          justifyContent: 'flex-end',
-          paddingRight: 5,
-          textAlign: 'right',
-          fontSize: 15
-        },
+    inputRow:{
+      width:"80%",
+      backgroundColor:'#EFF8FF',
+      // backgroundColor:colors.outline,
+      borderRadius:25,
+      height:30,
+      marginBottom:20,
+      justifyContent:"center",
+      padding:20
+    },
+      // inputRow: {
+      //   flexDirection: 'row',
+      //   justifyContent: 'space-around',
+      //   alignItems: 'center',
+      //   paddingVertical: 15,
+      // },
+      //   inputLabel: {
+      //     flex: 0.3,
+      //     justifyContent: 'flex-end',
+      //     paddingRight: 5,
+      //     textAlign: 'right',
+      //     fontSize: 15
+      //   },
         inputText: {
-          flex: 0.5,
-          borderColor: colors.outline,
-          paddingLeft: 5,
-          borderBottomWidth: 1,
+          // flex: 0.5,
+          // borderColor: colors.outline,
+          // paddingLeft: 5,
+          // borderBottomWidth: 1,
+          // fontSize: 18,
+          height:30,
           fontSize: 18,
+          color:colors.primary
         },
       bottomView: {
-        flex: 0.3,
+        flex: 0.2,
         flexDirection: 'row',
         width: '100%',
         justifyContent: 'center',
@@ -67,7 +80,7 @@ export const loginStyles = StyleSheet.create({
           justifyContent: 'center',
           alignItems: 'center',
           borderWidth: 1,
-          borderColor: colors.outline,
+          borderColor: colors.primary,
           borderRadius: 10,
           backgroundColor: colors.primary,
           width: 100,
@@ -76,7 +89,8 @@ export const loginStyles = StyleSheet.create({
         },
           buttonText: {
             textAlign: 'center',
-            color: 'white'
+            color: 'white',
+            fontSize: 16
           }
 });
 
@@ -198,6 +212,29 @@ export const detailStyles = StyleSheet.create({
     justifyContent: 'center',
     // paddingTop: 20
   },
+  logo: {
+    width: 400,
+    height: 100,
+    resizeMode: 'contain'
+  },
+  cameraContainer: {
+    flex: 1,
+  },
+  camera: {
+    flex: 0.95,
+  },
+  cameraControls: {
+    flex: 0.05, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    padding: '5%',
+    width: '100%',
+    backgroundColor: colors.primary
+  },
+  cameraText: {
+    fontSize: 25,
+    color: 'white'
+  },
     topView: {
       flex: 0.2,
       alignItems: 'center',
@@ -213,7 +250,6 @@ export const detailStyles = StyleSheet.create({
       // backgroundColor: 'lightgreen'
     },
       inputRow: {
-        // flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
         paddingVertical: 20
@@ -227,7 +263,6 @@ export const detailStyles = StyleSheet.create({
           fontSize: 20
         },
         inputText: {
-          // flex: 0.5,
           borderColor: colors.outline,
           paddingBottom: 10,
           borderBottomWidth: 3,
@@ -235,8 +270,8 @@ export const detailStyles = StyleSheet.create({
         },
         mainImage: {
           backgroundColor: colors.primary,
-          width: 100,
-          height: 70,
+          width: 350,
+          height: 250,
           borderRadius: 5,
           resizeMode: 'contain'
         },
@@ -261,6 +296,7 @@ export const detailStyles = StyleSheet.create({
         },
           buttonText: {
             textAlign: 'center',
-            color: 'white'
+            color: 'white',
+            fontSize: 16
           }
 });

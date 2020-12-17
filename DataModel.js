@@ -13,9 +13,9 @@ class DataModel {
     this.storageRef = firebase.storage().ref();
     this.recipes = [];
     this.users = [];
-    this.recipeListeners = [];
-    this.processInput = undefined;
-    this.theCallback = undefined;
+    this.chatListeners = [];
+    // this.theImage = undefined;
+    // this.theCallback = undefined;
     this.asyncInit();
   }
 
@@ -29,19 +29,34 @@ class DataModel {
     let querySnap = await this.recipesRef.get();
     querySnap.forEach(async qDocSnap => {
       let data = qDocSnap.data();
-      let thisRecipe = {
+      let thisRecipe  = {
         key: qDocSnap.id,
-        name: [],
-        description: [],
-        ingredients: [],
-        process: [],
+        name: data['name'],
+        description: data['description'],
+        ingredients: data['ingredients'],
+        process: data['process'],
+        images: []
       }
-      thisRecipe.name.push(data.name);
-      thisRecipe.description.push(data.description);
-      thisRecipe.ingredients.push(data.ingredients);
-      thisRecipe.process.push(data.process);
+      // data.key = qDocSnap.id;;
+      let imagesRef = qDocSnap.ref.collection("images");
+      let imagesQSnap = await imagesRef.get();
+      imagesQSnap.forEach(qDocSnap => {
+        let imageData = qDocSnap.data();
+        imageData.key = qDocSnap.id;
+        thisRecipe.images.push(imageData);
+      });
+
       this.recipes.push(thisRecipe);
     });
+    // let imageDocSnap = await this.currentImageRef.get();
+    // this.theImage = imageDocSnap.data();
+    // console.log("got image info", this.theImage);
+
+    // since MainScreen.constructor() will run before DataModel.constructor()
+    // we expect theCallback to have been set by now
+    // if (this.theCallback) {
+    //     this.theCallback(this.theImage);
+    // }
   }
 
   getRecipes = () => {
@@ -54,26 +69,28 @@ class DataModel {
       name: recipe.name,
       description: recipe.description,
       ingredients: recipe.ingredients,
-      process: recipe.process
+      process: recipe.process,
+      images: []
 
       //password: pass,
       //displayName: dispName
     }
     
-    this.recipesRef.add(newRecipe);
+    // this.recipesRef.add(newRecipe);
 
 
-    // // add the data to Firebase (user collection)
-    // let newRecipeDocRef = await this.recipesRef.add(newRecipe);
+    // add the data to Firebase (user collection)
+    let newRecipeDocRef = await this.recipesRef.add(newRecipe);
 
-    // // get the new Firebase ID and save it as the local "key"
-    // let key = newRecipeDocRef.id;
-    // newRecipe.key = key;
-    // this.recipes.push(newRecipe);
-    // return newRecipe;
+    // get the new Firebase ID and save it as the local "key"
+    let key = newRecipeDocRef.id;
+    newRecipe.key = key;
+    this.recipes.push(newRecipe);
+    return this.recipes;
   }
 
   updateRecipe = async (key, recipe) => {
+    let thisRecipeDocRef = this.recipesRef.doc(key);
     // assemble the data structure
     let updateRecipe = {
       name: recipe.name,
@@ -81,8 +98,22 @@ class DataModel {
       ingredients: recipe.ingredients,
       process: recipe.process
     }
-    let thisRecipeDocRef = this.recipesRef.doc(key);
     thisRecipeDocRef.update(updateRecipe);
+
+    // let {recipes} = this.recipes;
+    // let foundIndex = -1;
+    // for (let idx in recipes) {
+    //   if (recipes[idx].key === key) {
+    //     foundIndex = idx;
+    //     break;
+    //   }
+    // }
+    // if (foundIndex !== -1) { // silently fail if item not found
+    //   recipes[foundIndex].name = name;
+    //   recipes[foundIndex].description = description;
+    //   recipes[foundIndex].ingredients = ingredients; 
+    // }
+    // return recipes;
   }
 
   deleteRecipe = async (key) => {
@@ -107,14 +138,15 @@ class DataModel {
   // the recipe they want to subscribe to
   subscribeToRecipes = (recipes, notifyOnUpdate) => {
 
-    // note that this next statement takes up several lines
+    // note that this next staatement takes up several lines
     // The first line give us a CollectionReference to the recipes 
     // The second calls 'onSnapshot()' on the CollectionRef and provides a function
 
-    this.recipeSnapshotUnsub = this.recipesRef.onSnapshot((querySnap) => {
+    this.recipesRef.onSnapshot((querySnap) => {
   
-        // we zero out whatever messages were there previously and start over
+        // we zero out whatever recipes were there previously and start over
         recipes = [];
+
 
         // we go through each recipe Document Snapshot
         querySnap.forEach((qDocSnap) => {
@@ -129,41 +161,16 @@ class DataModel {
           recipes.push(recipeObj);
 
         });
-        notifyOnUpdate();
       });
     
       // at the end of this, the recipes list matches what's in Firebase
-      // console.log('Updated recipes:', recipes);   
+      // console.log('SubscribeToRecipes Updated recipes:', recipes);   
 
 
       // call the callback function. Because the caller has a reference to 'chat'
       // we don't need to pass any arguments.
-      // notifyOnUpdate();
+      notifyOnUpdate();
 
-  }
-
-  unsubscribeFromRecipe = (recipe) => {
-    // don't really need 'recipe' but could need it in the future
-    if (this.recipeSnapshotUnsub) {
-      this.recipeSnapshotUnsub();
-    }
-  }
-
-  // event listener
-  addRecipeListener = (listener, recipeID) => {
-    this.subscribeToRecipes(recipeID);
-    this.recipeListeners.push({
-      listener: listener,
-      recipeID: recipeID
-    });
-  }
-
-  notifyRecipeListeners = (_recipeID) => {
-    this.recipeListeners.forEach(({listener, recipeID}) => {
-      if (recipeID === _recipeID) {
-        listener.onRecipesUpdate();
-      }
-    });
   }
 
   loadUsers = async () => {
@@ -207,14 +214,22 @@ class DataModel {
     // will return undefined. No haiku this time...
   }
 
-addRecipeImage = async (recipe, imageObj) => {
+  addRecipeImage = async (recipe, imageObj) => {
     // console.log('... and here we would add the image ...');
     // let recipeDocRef = this.recipesRef.doc(recipe.key).collection('process');
+    let imagesRef = this.recipesRef.doc(recipe.key).collection('images');
+
     console.log('recipeKey', recipe.key)
 
     if (this.theCallback) {
       this.theCallback(imageObj);
     }
+
+    // this.theImage = imageObj;
+
+    // if (this.theCallback) {
+    //   this.theCallback(imageObj);
+    // }
 
     let fileName = '' + Date.now();
     let imageRef = this.storageRef.child(fileName);
@@ -230,7 +245,9 @@ addRecipeImage = async (recipe, imageObj) => {
       process: downloadURL,
       timestamp: fileName,
     }
-    this.recipesRef.doc(recipe.key).update(fbImageObject)
+
+    imagesRef.add(fbImageObject)
+    // this.recipesRef.doc(recipe.key).update(fbImageObject)
   }
 
   // this will allow the MainScreen to be notified when a new image is ready
