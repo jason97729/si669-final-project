@@ -35,6 +35,7 @@ class DataModel {
         description: data['description'],
         ingredients: data['ingredients'],
         process: data['process'],
+        author: data['author'],
         images: [], 
         // participants: []
       }
@@ -103,7 +104,8 @@ class DataModel {
       name: recipe.name,
       description: recipe.description,
       ingredients: recipe.ingredients,
-      process: recipe.process
+      process: recipe.process,
+      author: recipe.author
     }
     thisRecipeDocRef.update(updateRecipe);
 
@@ -254,6 +256,9 @@ class DataModel {
       author: author.key
     }
 
+    // return fbImageObject
+    // console.log('testing fbImageObject', fbImageObject)
+
     imagesRef.add(fbImageObject)
     // this.recipesRef.doc(recipe.key).update(fbImageObject)
   }
@@ -262,7 +267,6 @@ class DataModel {
   subscribeToImageUpdate = (callback) => {
     this.theCallback = callback;
   }
-
 
   // this will allow the CameraScreen to update the image
   updateImage = (imageObject) => {

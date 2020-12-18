@@ -1,9 +1,8 @@
 import React from 'react';
-import { TextInput, Text, View, 
-  FlatList, TouchableOpacity, Alert } 
+import { Text, View, 
+  FlatList, TouchableOpacity } 
   from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
 import { recipeStyles, colors } from './Styles';
 import { getDataModel } from './DataModel';
 
@@ -15,9 +14,7 @@ export class RecipesScreen extends React.Component {
 
     this.dataModel = getDataModel();
     this.currentUser = this.props.route.params.currentUser
-    // console.log('testing user', this.currentUser.displayName);
-
-    // console.log('recipes', this.props.route.params.recipes);
+    console.log('testing user on RecipeScreen', this.currentUser.displayName);
 
     // call getRecipes and capture the result in this.recipes
 
@@ -76,9 +73,8 @@ export class RecipesScreen extends React.Component {
       description: recipe.description,
       ingredients: recipe.ingredients,
       process: recipe.process,
-      author: recipe.author
+      author: this.currentUser.displayName,
     }
-   
     recipes = await this.dataModel.createRecipe(newRecipe)
 
     this.setState({recipes: recipes});
@@ -169,9 +165,14 @@ export class RecipesScreen extends React.Component {
                     onPress={()=>
                       this.props.navigation.navigate('Details', 
                       {operation: "edit",
-                       currentRecipe: item})}>
+                       currentRecipe: item,
+                       currentUser: this.currentUser})}>
                     <Text style={recipeStyles.listItemText}>{item.name}</Text>
-                    <Text style={recipeStyles.listAuthorText}>created by {this.currentUser.displayName}</Text>
+                      {item.author === this.currentUser.displayName ?
+                          <Text style={recipeStyles.listAuthorText}>created by me</Text> : 
+                          <Text style={recipeStyles.listAuthorText}>created by {item.author}</Text>}
+                    {/* <Text style={recipeStyles.listItemText}>{item.name}</Text>
+                    <Text style={recipeStyles.listAuthorText}>created by {item.author}</Text> */}
                   </TouchableOpacity>
                 </View>
                 <View>
@@ -179,7 +180,6 @@ export class RecipesScreen extends React.Component {
                     <Ionicons name="md-trash" 
                     size={25} 
                     color={colors.primary} />
-                    {/* <AntDesign name="minuscircleo" size={20} color={colors.primary} /> */}
                   </TouchableOpacity>
                 </View>
               </View>
@@ -190,17 +190,14 @@ export class RecipesScreen extends React.Component {
       <View style={recipeStyles.footer}>
           <TouchableOpacity onPress={()=>
               this.props.navigation.navigate('Details', 
-                {operation: "add"})}>
+                {operation: "add",
+                currentUser: this.currentUser})}>
             <Ionicons name="md-add-circle" 
             size={60} 
             color={colors.primary} />
-            {/* <AntDesign name="addfile" size={30} color={colors.primary}/> */}
-            {/* <Ionicons name="ios-add-circle-outline" size={60} color={colors.primary} /> */}
           </TouchableOpacity>
         </View>
     </View>
     )
   }
 }
-
-{/* <AntDesign name="addfile" size={24} color="black" /> */}

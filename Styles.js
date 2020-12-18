@@ -63,7 +63,7 @@ export const loginStyles = StyleSheet.create({
           // flex: 0.5,
           // borderColor: colors.outline,
           // paddingLeft: 5,
-          // borderBottomWidth: 1,
+          // borderBottomWidth: 10,
           // fontSize: 18,
           height:30,
           fontSize: 18,
@@ -257,6 +257,7 @@ export const detailStyles = StyleSheet.create({
     },
       inputRow: {
         // flexDirection:'column',
+        // flex: 1,
         justifyContent: 'space-around',
         alignItems: 'center',
         paddingVertical: 20
@@ -267,13 +268,21 @@ export const detailStyles = StyleSheet.create({
           paddingTop:10,
           paddingBottom: 10,
           // textAlign: 'center',
-          fontSize: 20
+          fontSize: 20,
+          fontWeight: '500'
         },
         inputText: {
           // flexShrink: 1,
           borderColor: colors.outline,
           paddingBottom: 10,
           borderBottomWidth: 3,
+          fontSize: 18,
+        },
+        inputTextOther: {
+          // flexShrink: 1,
+          // borderColor: colors.outline,
+          paddingBottom: 10,
+          // borderBottomWidth: 3,
           fontSize: 18,
         },
         mainImage: {
