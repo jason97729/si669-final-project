@@ -15,10 +15,11 @@ export class DetailScreen extends React.Component {
 
     this.operation = this.props.route.params.operation;
     this.currentRecipe = this.props.route.params.currentRecipe;
-    console.log("in detail screen, currentRecipe = ", this.currentRecipe);
+    // console.log("in detail screen, currentRecipe = ", this.currentRecipe);
     this.currentUser = this.props.route.params.currentUser;
     this.dataModel = getDataModel();
-    this.dataModel.subscribeToImageUpdate(this.onImageUpdate);
+    // this.dataModel.subscribeToImage(this.currentRecipe, this.onImageUpdate);
+    // this.imageObj = this.props.route.params.imageObj;
     // console.log('current recipe:', this.currentRecipe);
     // console.log(this.currentRecipe.key);
     // console.log(this.props.route.params.currentRecipe.name.toString())
@@ -33,16 +34,19 @@ export class DetailScreen extends React.Component {
     let descriptionInit = '';
     let ingredientsInit = '';
     let processInit = '';
+    let imageURLInit = '';
     if (this.operation === 'edit') {
       nameInit = this.currentRecipe.name.toString();
       descriptionInit = this.props.route.params.currentRecipe.description.toString();
       ingredientsInit = this.props.route.params.currentRecipe.ingredients.toString();
       processInit = this.props.route.params.currentRecipe.process.toString();
+      imageURLInit = this.props.route.params.currentRecipe.imageURL.toString();
     }
 
     this.state = {
       // recipes: [],
       theImage: require('./assets/logo.png'), // placeholder
+      // theImage: {uri: imageURLInit},
       nameInput: nameInit,
       descriptionInput: descriptionInit,
       ingredientsInput: ingredientsInit,
@@ -50,15 +54,44 @@ export class DetailScreen extends React.Component {
     }
   }
 
-
-
-  onImageUpdate = (imageObject) => {
-    
-    this.setState({
-      theImage: imageObject
-    });
-    // console.log('testingImage', theImage)
+  componentDidMount = () => {
+    this.subscribeToImage();
   }
+
+  subscribeToImage = async() => {
+    
+    // this.recipe = await this.dataModel.getRecipe(this.currentRecipe);
+    // when we subscribe, we will receive an update right away
+    // and anytime there's a change thereafter. So we don't want to setState()
+    // here but when we get the updates
+    this.dataModel.subscribeToImage(this.currentRecipe, this.onImageUpdate);
+
+  }
+
+
+  onImageUpdate = () => {
+    console.log('got recipe update', this.currentRecipe);
+    this.setState({theImage: {uri: this.currentRecipe.imageURL}});
+  }
+
+
+  // checkFirebaseImage = () => {
+  //   if (this.currentRecipe.imageURL) {
+  //     this.setState ({
+  //       theImage: {uri: this.currentRecipe.imageURL}
+  //     })
+  //   }
+  // }
+
+
+
+  // onImageUpdate = (imageObject) => {
+
+  //   this.setState({
+  //     theImage: imageObject
+  //   });
+  //   // console.log('testingImage', theImage)
+  // }
 
   // onTakePicture = () => {
   //   this.props.navigation.navigate("Camera", {
@@ -178,7 +211,7 @@ export class DetailScreen extends React.Component {
                           description: this.state.descriptionInput,
                           ingredients: this.state.ingredientsInput,
                           process: this.state.processInput,
-                          images: [this.state.theImage],
+                          imageURL: this.state.theImage.uri,
                           key: -1 // placeholder for "no ID"
                         }
                       } else { // operation === 'edit'
@@ -187,12 +220,12 @@ export class DetailScreen extends React.Component {
                         theRecipe.description = this.state.descriptionInput;
                         theRecipe.ingredients = this.state.ingredientsInput;
                         theRecipe.process = this.state.processInput;
-                        theRecipe.images.push(this.state.theImage);
+                        theRecipe.image = this.state.theImage.uri;
                       }
                       this.props.navigation.navigate("Camera", {
                         operation: this.operation,
                         currentRecipe: theRecipe,
-                        currentUser: this.currentUser
+                        currentUser: this.currentUser,
                       });
                     }}
                       //   this.props.navigation.navigate('Camera', 
@@ -244,7 +277,7 @@ export class DetailScreen extends React.Component {
                           description: this.state.descriptionInput,
                           ingredients: this.state.ingredientsInput,
                           process: this.state.processInput,
-                          images: [this.state.theImage],
+                          imageURL: this.state.theImage.uri,
                           key: -1 // placeholder for "no ID"
                         }
                       } else { // operation === 'edit'
@@ -253,11 +286,12 @@ export class DetailScreen extends React.Component {
                         theRecipe.description = this.state.descriptionInput;
                         theRecipe.ingredients = this.state.ingredientsInput;
                         theRecipe.process = this.state.processInput;
-                        theRecipe.images.push(this.state.theImage);
+                        theRecipe.image = this.state.theImage.uri;
                       }
                       this.props.navigation.navigate("Recipes", {
                         operation: this.operation,
-                        recipe: theRecipe
+                        recipe: theRecipe,
+                        // imageObj: this.imageObj
                       });
                     }}
                     >

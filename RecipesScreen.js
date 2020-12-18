@@ -13,7 +13,7 @@ export class RecipesScreen extends React.Component {
     super(props);
 
     this.dataModel = getDataModel();
-    this.currentUser = this.props.route.params.currentUser
+    this.currentUser = this.props.route.params.currentUser;
     // console.log(this.props.route.params.recipe);
 
     // console.log('recipes', this.props.route.params.recipes);
@@ -58,9 +58,13 @@ export class RecipesScreen extends React.Component {
 
   onFocus = () => {
     if (this.props.route.params) {
-      const {operation, recipe} = this.props.route.params;
+      const {operation, recipe, imageObj} = this.props.route.params;
+      // console.log(operation);
+      // console.log(recipe);
+      // console.log(imageObj);
       if (operation === 'add') {
-        this.createRecipe(recipe);
+        // console.log(imageObj);
+        this.createRecipe(recipe, imageObj);
       } else if (operation === 'edit') {
         this.updateRecipe(recipe, recipe.key);
       } 
@@ -68,7 +72,7 @@ export class RecipesScreen extends React.Component {
     this.props.navigation.setParams({operation: 'none'});
   }
 
-  createRecipe = async (recipe) => {
+  createRecipe = async (recipe, imageObj) => {
     
     let newRecipe = {
       name: recipe.name,
@@ -78,7 +82,7 @@ export class RecipesScreen extends React.Component {
       images: recipe.images
     }
    
-    recipes = await this.dataModel.createRecipe(newRecipe)
+    recipes = await this.dataModel.createRecipe(newRecipe, imageObj)
 
     this.setState({recipes: recipes});
     

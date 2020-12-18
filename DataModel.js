@@ -29,24 +29,33 @@ class DataModel {
     let querySnap = await this.recipesRef.get();
     querySnap.forEach(async qDocSnap => {
       let data = qDocSnap.data();
+      
+      let imageRef = qDocSnap.ref.collection('images').doc('currentImage');
+      let imageDocSnap = await imageRef.get();
+      let imageData = imageDocSnap.data();
+      // console.log("got image info", this.theImage);
+
       let thisRecipe  = {
         key: qDocSnap.id,
         name: data['name'],
         description: data['description'],
         ingredients: data['ingredients'],
         process: data['process'],
-        images: []
+        imageURL: imageData['uri']
       }
       // data.key = qDocSnap.id;;
-      let imagesRef = qDocSnap.ref.collection("images");
-      let imagesQSnap = await imagesRef.get();
-      imagesQSnap.forEach(qDocSnap => {
-        let imageData = qDocSnap.data();
-        imageData.key = qDocSnap.id;
-        thisRecipe.images.push(imageData);
-      });
+      // console.log(qDocSnap.data());
+
+      // let imagesRef = qDocSnap.ref.collection("images");
+      // let imagesQSnap = await imagesRef.get();
+      // imagesQSnap.forEach(qDocSnap => {
+      //   let imageData = qDocSnap.data();
+      //   imageData.key = qDocSnap.id;
+      //   thisRecipe.images.push(imageData);
+      // });
 
       this.recipes.push(thisRecipe);
+
     });
     // let imageDocSnap = await this.currentImageRef.get();
     // this.theImage = imageDocSnap.data();
@@ -54,13 +63,22 @@ class DataModel {
 
     // since MainScreen.constructor() will run before DataModel.constructor()
     // we expect theCallback to have been set by now
-    // if (this.theCallback) {
-    //     this.theCallback(this.theImage);
-    // }
+    if (this.theCallback) {
+        this.theCallback(this.theImage);
+    }
   }
 
   getRecipes = () => {
     return this.recipes;
+  }
+
+  getRecipe = async (recipe) => {
+    let thisRecipeDocRef = this.recipesRef.doc(recipe.key);
+
+    let recipeDocSnap = await thisRecipeDocRef.get();
+    let recipeData = recipeDocSnap.data();
+
+    return recipeData
   }
 
   createRecipe = async (recipe) => {
@@ -70,11 +88,13 @@ class DataModel {
       description: recipe.description,
       ingredients: recipe.ingredients,
       process: recipe.process,
-      images: []
+      imageURL: recipe.imageURL,
+      // imageURL: imageObj.imageURL
 
       //password: pass,
       //displayName: dispName
     }
+
     
     // this.recipesRef.add(newRecipe);
 
@@ -97,7 +117,7 @@ class DataModel {
       description: recipe.description,
       ingredients: recipe.ingredients,
       process: recipe.process,
-      images: []
+      imageURL: recipe.imageURL
     }
     thisRecipeDocRef.update(updateRecipe);
 
@@ -254,15 +274,15 @@ class DataModel {
     // will return undefined. No haiku this time...
   }
 
-  addRecipeImage = async (recipe, imageObj) => {
+  addRecipeImage = async (imageObj) => {
     // console.log('... and here we would add the image ...');
     // let recipeDocRef = this.recipesRef.doc(recipe.key).collection('process');
     // console.log('recipeKey', recipe.key)
-    if (typeof recipe.key !== "string") {
-      recipe.key = recipe.key.toString()
-    }
+    // if (typeof recipe.key !== "string") {
+    //   recipe.key = recipe.key.toString()
+    // }
     
-    let imagesRef = this.recipesRef.doc(recipe.key).collection('images');
+    // let imagesRef = this.recipesRef.doc(recipe.key)
 
     
 
@@ -291,20 +311,62 @@ class DataModel {
       timestamp: fileName,
     }
 
-    imagesRef.add(fbImageObject)
+    // console.log(fbImageObject);
+
+    return fbImageObject
+
+    // imagesRef.add(fbImageObject)
     // this.recipesRef.doc(recipe.key).update(fbImageObject)
   }
+
+
 
   // this will allow the MainScreen to be notified when a new image is ready
   subscribeToImageUpdate = (callback) => {
     this.theCallback = callback;
   }
 
+  subscribeToImage = async (recipe, notifyOnUpdate) => {
+    this.recipesRef.doc(recipe.key).collection('images').onSnapshot((querySnap) => {
+
+      // we zero out whatever image was there previously and start over
+      recipe.imageURL = '';
+      
+
+      querySnap.forEach((qDocSnap) => {
+
+        // let imageDocSnap = await imageRef.get();
+        // let imageData = imageDocSnap.data();
+
+        let imageData = qDocSnap.data();
+
+        recipe.imageURL = imageData.uri;
+
+      });
+
+    });
+    
+    // .doc('currentImage');
+    console.log('Updated recipe image URL:', recipe.imageURL);
+
+
+    // call the callback function. Because the caller has a reference to 'chat'
+    // we don't need to pass any arguments.
+    notifyOnUpdate();
+
+  }
+
 
   // this will allow the CameraScreen to update the image
-  updateImage = async (imageObject) => {
+  updateImage = async (recipe, imageObject) => {
+
+    if (typeof recipe.key !== "string") {
+        recipe.key = recipe.key.toString()
+    }
+
+    let currentImageRef = this.recipesRef.doc(recipe.key + '/images/currentImage');
         
-    let imagesRef = this.recipesRef.doc(recipe.key).collection('images');
+    // let imagesRef = this.recipesRef.doc(recipe.key).collection('images');
 
     //imageObject format: {uri: xxx, width: yyy, height: zzz}
     this.theImage = imageObject;
@@ -335,7 +397,7 @@ class DataModel {
       uri: downloadURL
     }
   //    imageObject.uri = downloadURL; // replace local URI with permanent one
-    await imagesRef.set(fbImageObject);
+    await currentImageRef.set(fbImageObject);
     // if (this.theCallback) {
     //   this.theCallback(imageObject);
     // }
