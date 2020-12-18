@@ -13,21 +13,13 @@ export class RecipesScreen extends React.Component {
     super(props);
 
     this.dataModel = getDataModel();
-    this.currentUser = this.props.route.params.currentUser
-    console.log('testing user on RecipeScreen', this.currentUser.displayName);
-
-    // call getRecipes and capture the result in this.recipes
+    this.currentUser = this.props.route.params.currentUser;
+    // console.log('testing user on RecipeScreen', this.currentUser.displayName);
 
     this.nextKey = 0;
 
     this.state = {
       recipes: recipes,
-      // nameInput: '',
-      // descriptionInput:'',
-      // ingredientsInput: '',
-      // processInput: ''
-      //displayNameInput: '',
-      //passwordInput: '',
     }
   }
 
@@ -38,8 +30,6 @@ export class RecipesScreen extends React.Component {
 
 
   subscribeToRecipes = async() => {
-
-
     this.recipes = this.dataModel.getRecipes();
 
     // when we subscribe, we will receive an update right away
@@ -48,7 +38,6 @@ export class RecipesScreen extends React.Component {
     this.dataModel.subscribeToRecipes(this.recipes, this.onRecipesUpdate);
   }
 
-
   onRecipesUpdate = () => {
     // console.log('got recipes update', this.recipes);
     this.setState({recipes: this.recipes});
@@ -56,9 +45,13 @@ export class RecipesScreen extends React.Component {
 
   onFocus = () => {
     if (this.props.route.params) {
-      const {operation, recipe} = this.props.route.params;
+      const {operation, recipe, imageObj} = this.props.route.params;
+      // console.log(operation);
+      // console.log(recipe);
+      // console.log(imageObj);
       if (operation === 'add') {
-        this.createRecipe(recipe);
+        // console.log(imageObj);
+        this.createRecipe(recipe, imageObj);
       } else if (operation === 'edit') {
         this.updateRecipe(recipe, recipe.key);
       } 
@@ -72,10 +65,11 @@ export class RecipesScreen extends React.Component {
       name: recipe.name,
       description: recipe.description,
       ingredients: recipe.ingredients,
-      process: recipe.process,
+      // process: recipe.process,
+      images: recipe.images,
       author: this.currentUser.displayName,
     }
-    recipes = await this.dataModel.createRecipe(newRecipe)
+    recipes = await this.dataModel.createRecipe(newRecipe, imageObj)
 
     this.setState({recipes: recipes});
     
@@ -105,7 +99,8 @@ export class RecipesScreen extends React.Component {
       recipes[foundIndex].name = recipe.name;
       recipes[foundIndex].description = recipe.description;
       recipes[foundIndex].ingredients = recipe.ingredients; 
-      recipes[foundIndex].process = recipe.process; 
+      // recipes[foundIndex].process = recipe.process;
+      recipes[foundIndex].images = recipe.images; 
       recipes[foundIndex].author = recipe.author;
     }
    
@@ -191,6 +186,7 @@ export class RecipesScreen extends React.Component {
           <TouchableOpacity onPress={()=>
               this.props.navigation.navigate('Details', 
                 {operation: "add",
+                currentRecipe: this.props.route.params,
                 currentUser: this.currentUser})}>
             <Ionicons name="md-add-circle" 
             size={60} 

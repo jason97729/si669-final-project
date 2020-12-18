@@ -34,37 +34,17 @@ export const loginStyles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
-      // backgroundColor: 'lightgreen'
     },
     inputRow:{
       width:"80%",
       backgroundColor:'#EFF8FF',
-      // backgroundColor:colors.outline,
       borderRadius:25,
       height:30,
       marginBottom:20,
       justifyContent:"center",
       padding:20
     },
-      // inputRow: {
-      //   flexDirection: 'row',
-      //   justifyContent: 'space-around',
-      //   alignItems: 'center',
-      //   paddingVertical: 15,
-      // },
-      //   inputLabel: {
-      //     flex: 0.3,
-      //     justifyContent: 'flex-end',
-      //     paddingRight: 5,
-      //     textAlign: 'right',
-      //     fontSize: 15
-      //   },
         inputText: {
-          // flex: 0.5,
-          // borderColor: colors.outline,
-          // paddingLeft: 5,
-          // borderBottomWidth: 10,
-          // fontSize: 18,
           height:30,
           fontSize: 18,
           color:colors.primary
@@ -107,7 +87,6 @@ export const recipeStyles = StyleSheet.create({
       justifyContent: 'flex-start',
       alignItems: 'stretch',
       width: '100%',
-      // backgroundColor: 'lightblue'
     },  
       separator: {
         backgroundColor: colors.outline,
@@ -115,7 +94,6 @@ export const recipeStyles = StyleSheet.create({
         width: '80%',
         alignSelf: 'center'
       },
-      // added from listmaker 2000
       listItemContainer: {
         flex: 1,
         flexDirection: 'row',
@@ -140,74 +118,7 @@ export const recipeStyles = StyleSheet.create({
       footer: {
           flex: 0.2,
           justifyContent: 'center',
-          // alignItems: 'center',
-          // backgroundColor: 'yellow'
         },
-});
-
-export const chatStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-    messageListContainer: {
-      flex: 0.9,
-      justifyContent: 'center',
-      alignItems: 'stretch',
-      width: '100%',
-      alignSelf: 'center',
-      paddingTop: '3%'
-    },
-      chatTextSelfContainer: {
-        alignSelf: 'flex-end',
-        padding: 5,
-        margin: 5, 
-        marginRight: 20,
-        marginLeft: 40,
-        backgroundColor: 'lightblue',
-        borderRadius: 6
-      },
-        chatTextSelf: {
-          fontSize: 18,
-          textAlign: 'right',
-        },
-      chatTextOtherContainer: {
-        alignSelf: 'flex-start',
-        padding: 5,
-        margin: 5, 
-        marginLeft: 20,
-        marginRight: 40,
-        backgroundColor: 'lightgray',
-        borderRadius: 6
-      },
-        chatTextOther: {
-          fontSize: 18,
-          textAlign: 'left',
-        },
-    inputContainer: {
-      flex: 0.1,
-      width: '100%',
-      justifyContent: 'flex-start',
-      alignItems: 'stretch'
-    },
-      inputRow: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center'
-      },  
-      inputBox: {
-        flex: 0.8,
-        borderWidth: 1,
-        borderColor: colors.primaryDark,
-        borderRadius: 6,
-        alignSelf: 'center',
-        fontSize: 18,
-        height: 40,
-        padding: 5,
-        margin: 5
-      }
 });
 
 export const detailStyles = StyleSheet.create({
@@ -216,7 +127,6 @@ export const detailStyles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    // paddingTop: 20
   },
   logo: {
     width: 400,
@@ -253,36 +163,26 @@ export const detailStyles = StyleSheet.create({
       justifyContent: 'flex-start',
       alignItems: 'stretch',
       width: '100%',
-      // backgroundColor: 'lightgreen'
     },
       inputRow: {
-        // flexDirection:'column',
-        // flex: 1,
         justifyContent: 'space-around',
         alignItems: 'center',
         paddingVertical: 20
       },
         inputLabel: {
-          // flex: 0.3,
-          // justifyContent: 'flex-start',
           paddingTop:10,
           paddingBottom: 10,
-          // textAlign: 'center',
           fontSize: 20,
           fontWeight: '500'
         },
         inputText: {
-          // flexShrink: 1,
           borderColor: colors.outline,
           paddingBottom: 10,
           borderBottomWidth: 3,
           fontSize: 18,
         },
         inputTextOther: {
-          // flexShrink: 1,
-          // borderColor: colors.outline,
           paddingBottom: 10,
-          // borderBottomWidth: 3,
           fontSize: 18,
         },
         mainImage: {
@@ -298,7 +198,6 @@ export const detailStyles = StyleSheet.create({
         width: '100%',
         justifyContent: 'center',
         alignItems: 'flex-start',
-        // backgroundColor: 'yellow'
       },
         buttonContainer: {
           justifyContent: 'center',

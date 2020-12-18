@@ -1,11 +1,7 @@
 import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
-
-import { Button } from 'react-native-elements';
-
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
-
 import { detailStyles } from './Styles';
 import { getDataModel } from './DataModel';
 
@@ -41,16 +37,7 @@ export class CameraScreen extends React.Component {
     let picData = await this.cameraRef.takePictureAsync();
     this.dataModel.addRecipeImage(this.currentRecipe, picData);
     this.props.navigation.goBack();
-    console.log('took picture!', this.dataModel.addRecipeImage(this.currentRecipe, picData));
   }
-
-//   handleTakePicture = async () => {
-//     let picData = await this.camera.takePictureAsync();
-//     console.log('took picture again!', picData);
-//     this.dataModel.addRecipeImage(this.currentRecipe, picData);
-//     this.dataModel.updateImage(picData);
-//     this.props.navigation.goBack();
-//   }
 
   setupCamera = async (cameraRef) => { 
     this.camera = cameraRef;
